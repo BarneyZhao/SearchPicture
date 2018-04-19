@@ -1,18 +1,14 @@
 const router = require('express').Router();
-// var analyticsService = require(global.__base + '/server/services/analyticsService.js');
+const baseService = require('../services/baseService.js');
 // var config = require(global.__base + '/config');
 
 router.get('/search', (req, res) => {
-  res.json(req.headers);
-
-  // analyticsService.webTracking(TrackingData, config.api.trackingApiUrl)
-  //   .then(function (data) {
-  //     res.json(data);
-  //   })
-  //   .catch(function (err) {
-  //     log.error((err && err.stack) || JSON.stringify(err));
-  //     res.json(err);
-  //   });
+  baseService.search(req.query).then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    console.log(err);
+    res.json(err.message);
+  });
 });
 
 module.exports = router;

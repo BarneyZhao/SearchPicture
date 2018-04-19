@@ -15,6 +15,8 @@ import {
   Icon,
   Col,
   Row,
+  Select,
+  Option,
   Message,
   MessageBox,
   Notification,
@@ -38,6 +40,8 @@ Vue.use(FormItem);
 Vue.use(Icon);
 Vue.use(Col);
 Vue.use(Row);
+Vue.use(Select);
+Vue.use(Option);
 
 window.Message = Message;
 window.MessageBox = MessageBox;

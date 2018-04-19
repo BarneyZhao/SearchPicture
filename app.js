@@ -22,3 +22,7 @@ app.use(require('./server/controllers/baseController.js'));
 const server = app.listen(process.env.PORT || 3000, function () {
   console.log('Listening on port ' + server.address().port + '...');
 });
+
+// const cp = require('child_process');
+// const cs = cp.fork(path.join(__dirname, '/server/service/baseService.js'));
+// cs.send('invoke');
