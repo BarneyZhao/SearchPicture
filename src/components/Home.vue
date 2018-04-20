@@ -54,10 +54,13 @@
             </el-input>
           </el-form-item>
           <el-form-item label="">
-            <el-button class="submitButton" @click="search" :loading="isLoading">开始</el-button>
+            <el-button class="submitButton" @click="search" :loading="isLoading">
+              {{isLoading ? '运行中' : '开始'}}
+            </el-button>
           </el-form-item>
         </el-form>
-        <div>{{outputData}}</div>
+        <div>查询结果:{{outputData.length}}</div>
+        <div class="outputText">{{outputData}}</div>
       </el-main>
     </el-container>
   </div>
@@ -110,5 +113,9 @@ export default {
 }
 .submitButton {
   width: 150px;;
+}
+.outputText {
+  height: 600px;
+  overflow-y: auto;
 }
 </style>

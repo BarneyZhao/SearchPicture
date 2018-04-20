@@ -8,11 +8,34 @@ const sizeOf = require('image-size');
 const getFiles = (query) => {
   console.log('getFiles');
   return new Promise((resolve, reject) => {
-    glob(`${query.inputFolder}/**/*.{jpg,png}`, { nodir: true }, (err, files) => {
+    fs.readFile(`${query.inputFolder}/filenamecache.txt`, 'utf8', (err, data) => {
       if (err) {
-        reject(err);
+        console.log(err);
+        console.log('running glob...');
+        glob(`${query.inputFolder}/**/*.{jpg,png}`, { nodir: true }, (globErr, files) => {
+          if (globErr) {
+            reject(globErr);
+          } else {
+            resolve(files);
+            fs.writeFile(`${query.inputFolder}/filenamecache.txt`, JSON.stringify(files), (writeErr) => {
+              if (writeErr) {
+                console.log(writeErr);
+              } else {
+                console.log('filenamecache.txt is created.');
+              }
+            });
+          }
+        });
       } else {
-        resolve(files);
+        console.log('get data from cache.');
+        let files;
+        try {
+          files = JSON.parse(data);
+          resolve(files);
+        } catch (e) {
+          console.log(e);
+          reject(e);
+        }
       }
     });
   });
@@ -27,20 +50,27 @@ exports.search = (query) => {
   }).then((data) => {
     const filterData = [];
     data.forEach((file) => {
-      const image = sizeOf(file);
-      if (query.w && Number.parseInt(query.w, 0) === image.width) {
-        filterData.push(file);
-      }
-      if (query.h && Number.parseInt(query.h, 0) === image.height) {
-        filterData.push(file);
-      }
-      if (query.rh && query.rw && (image.width / image.height).toFixed(2) ===
-        (Number.parseInt(query.rw, 0) / Number.parseInt(query.rh, 0)).toFixed(2)) {
-        filterData.push(file);
+      let image;
+      try {
+        image = sizeOf(file);
+        if (query.w && Number.parseInt(query.w, 0) === image.width) {
+          filterData.push(file);
+        }
+        if (query.h && Number.parseInt(query.h, 0) === image.height) {
+          filterData.push(file);
+        }
+        if (query.rh && query.rw && (image.width / image.height).toFixed(2) ===
+          (Number.parseInt(query.rw, 0) / Number.parseInt(query.rh, 0)).toFixed(2)) {
+          filterData.push(file);
+        }
+      } catch (e) {
+        console.log(`${file} occurs error`);
+        console.log(e);
       }
     });
     return filterData.length === 0 ? data : filterData;
   }).then((data) => {
+    console.log(`filter count : ${data.length}`);
     if (query.outputFolder) {
       data.forEach((file) => {
         const filename = path.basename(file);
