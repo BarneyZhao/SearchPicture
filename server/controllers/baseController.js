@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const router = require('express').Router();
 const baseService = require('../services/baseService.js');
 // var config = require(global.__base + '/config');
