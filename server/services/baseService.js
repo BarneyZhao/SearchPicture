@@ -9,7 +9,7 @@ const sizeOf = require('image-size');
 const getFiles = (query) => {
   console.log('getFiles');
   return new Promise((resolve, reject) => {
-    fs.readFile(`${query.inputFolder}/filenamecache.txt`, 'utf8', (err, data) => {
+    fs.readFile(`${query.inputFolder}/filenamecacheForsearch.txt`, 'utf8', (err, data) => {
       if (err) {
         console.log(err);
         console.log('running glob...');
@@ -18,11 +18,11 @@ const getFiles = (query) => {
             reject(globErr);
           } else {
             resolve(files);
-            fs.writeFile(`${query.inputFolder}/filenamecache.txt`, JSON.stringify(files), (writeErr) => {
+            fs.writeFile(`${query.inputFolder}/filenamecacheForsearch.txt`, JSON.stringify(files), (writeErr) => {
               if (writeErr) {
                 console.log(writeErr);
               } else {
-                console.log('filenamecache.txt is created.');
+                console.log('filenamecacheForsearch.txt is created.');
               }
             });
           }
@@ -50,7 +50,7 @@ exports.search = (query) => {
     return data;
   }).then((data) => {
     const filterData = [];
-    data.forEach((file) => {
+    data.forEach((file, index) => {
       let image;
       try {
         image = sizeOf(file);
@@ -67,6 +67,9 @@ exports.search = (query) => {
       } catch (e) {
         console.log(`${file} occurs error`);
         console.log(e);
+      }
+      if (index % 100 === 0) {
+        console.log(`image check:${index}`);
       }
     });
     return filterData.length === 0 ? data : filterData;
