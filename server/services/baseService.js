@@ -68,8 +68,8 @@ exports.search = (query) => {
         console.log(`${file} occurs error`);
         console.log(e);
       }
-      if (index % 100 === 0) {
-        console.log(`image check:${index}`);
+      if (index % 100 === 0 || (index + 50) > data.length) {
+        console.log(`image check:${index}/${data.length}`);
       }
     });
     return filterData.length === 0 ? data : filterData;
