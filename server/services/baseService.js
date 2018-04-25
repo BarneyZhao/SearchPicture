@@ -2,7 +2,10 @@
 const glob = require('glob');
 const path = require('path');
 const fs = require('fs');
-const sizeOf = require('image-size');
+const cpfork = require('child_process').fork;
+const numCPUs = require('os').cpus().length;
+
+const imageChild = `${global.rootpath}/server/childs/imageCheck.js`;
 
 // /Users/barneyzhao/local-web-server
 
@@ -43,51 +46,64 @@ const getFiles = (query) => {
 };
 
 exports.search = (query) => {
-  console.log('search');
-  console.log(query);
+  console.log('search...');
   return getFiles(query).then((data) => {
     console.log(`files count : ${data.length}`);
     return data;
   }).then((data) => {
-    const filterData = [];
-    data.forEach((file, index) => {
-      let image;
-      try {
-        image = sizeOf(file);
-        if (query.w && Number.parseInt(query.w, 0) === image.width) {
-          filterData.push(file);
+    console.log('query start...');
+    return new Promise((resolve) => {
+      if (query.w || query.h || query.rw || query.rh) {
+        let workerCount = 0;
+        let filterData = [];
+        let finishedCount = 0;
+        const workers = [];
+        const dataCopy = [...data];
+        const singleCount = Math.ceil(data.length / numCPUs);
+        const workOnMessage = (m) => {
+          filterData = filterData.concat(m.filterData);
+          workerCount += 1;
+          finishedCount += m.handleData;
+          if (workerCount === numCPUs) {
+            resolve(filterData);
+          }
+          console.log(`child:${m.id} is close. finished:${finishedCount}/${data.length} result:${m.filterData.length}`);
+          workers[m.id].kill();
+        };
+        for (let i = 1; i <= numCPUs; i += 1) {
+          const singleData = dataCopy.splice(0, singleCount + 1);
+          const worker = cpfork(imageChild);
+          worker.send({
+            id: i - 1,
+            data: singleData,
+            query,
+          });
+          worker.on('message', workOnMessage);
+          workers.push(worker);
         }
-        if (query.h && Number.parseInt(query.h, 0) === image.height) {
-          filterData.push(file);
-        }
-        if (query.rh && query.rw && (image.width / image.height).toFixed(2) ===
-          (Number.parseInt(query.rw, 0) / Number.parseInt(query.rh, 0)).toFixed(2)) {
-          filterData.push(file);
-        }
-      } catch (e) {
-        console.log(`${file} occurs error`);
-        console.log(e);
-      }
-      if (index % 100 === 0 || (index + 50) > data.length) {
-        console.log(`image check:${index}/${data.length}`);
+      } else {
+        resolve(data);
       }
     });
-    return filterData.length === 0 ? data : filterData;
   }).then((data) => {
     console.log(`filter count : ${data.length}`);
+    console.log('finish...');
     if (query.outputFolder) {
+      const outputPath = `${query.outputFolder}/searchpicture${new Date().toLocaleDateString().replace(/\//g, '-')}-${new Date().getTime()}`;
       data.forEach((file) => {
-        const filename = path.basename(file);
-        const readStream = fs.createReadStream(file);
-        const writeStream = fs.createWriteStream(`${query.outputFolder}/${filename}`);
-        readStream.pipe(writeStream);
+        try {
+          const filename = path.basename(file);
+          const readStream = fs.createReadStream(file);
+          if (!fs.existsSync(outputPath)) {
+            fs.mkdirSync(outputPath);
+          }
+          const writeStream = fs.createWriteStream(`${outputPath}/${filename}`);
+          readStream.pipe(writeStream);
+        } catch (error) {
+          console.log(error);
+        }
       });
     }
     return data;
   });
 };
-
-// process.on('message', (m) => {
-//   console.log(m);
-//   getFiles();
-// });

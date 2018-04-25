@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-global.__base = __dirname;
+global.rootpath = __dirname;
 
 // middleware
 app.use(require('./server/middlewares/crossOrigin.js'));
@@ -22,7 +22,3 @@ app.use(require('./server/controllers/baseController.js'));
 const server = app.listen(process.env.PORT || 3000, function () {
   console.log('Listening on port ' + server.address().port + '...');
 });
-
-// const cp = require('child_process');
-// const cs = cp.fork(path.join(__dirname, '/server/service/baseService.js'));
-// cs.send('invoke');
