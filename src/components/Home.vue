@@ -88,6 +88,7 @@ export default {
   methods: {
     search() {
       this.isLoading = true;
+      this.outputData = '';
       const config = {
         params: this.form,
       };

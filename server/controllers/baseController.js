@@ -9,7 +9,7 @@ router.get('/search', (req, res) => {
     res.json(data);
   }).catch((err) => {
     console.log(err);
-    res.json(err.message);
+    res.json(err.message || err);
   });
 });
 

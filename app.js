@@ -1,11 +1,12 @@
 'use strict';
-var express = require('express');
-var app = express();
-var path = require('path');
-// var config = require(path.join(__dirname, '/config'));
-var bodyParser = require('body-parser');
+const express = require('express');
+const app = express();
+const path = require('path');
+// const config = require(path.join(__dirname, '/config'));
+const bodyParser = require('body-parser');
 // app properties setting
 app.use(express.static(path.join(__dirname, '/dist')));
+app.use(express.static(path.join(__dirname, '/static')));
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
@@ -22,3 +23,4 @@ app.use(require('./server/controllers/baseController.js'));
 const server = app.listen(process.env.PORT || 3000, function () {
   console.log('Listening on port ' + server.address().port + '...');
 });
+server.setTimeout(0);
