@@ -13,4 +13,18 @@ router.get('/search', (req, res) => {
   });
 });
 
+router.get('/image', (req, res) => {
+  baseService.getImage(req.query).then((data) => {
+    if (!data) {
+      res.statusCode(404);
+      res.end();
+    } else {
+      res.end(data);
+    }
+  }).catch(() => {
+    res.statusCode(404);
+    res.end();
+  });
+});
+
 module.exports = router;

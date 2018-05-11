@@ -59,10 +59,13 @@
             </el-button>
           </el-form-item>
         </el-form>
-        <div>查询结果:{{outputData.length}}</div>
+        <div>查询结果:{{outputData ? outputData.length : ''}}</div>
         <div class="outputText">{{outputData}}</div>
       </el-main>
     </el-container>
+    <div class="imagePlayer" v-if="outputData">
+      <img :src="getImageSrc">
+    </div>
   </div>
 </template>
 
@@ -82,13 +85,13 @@ export default {
         rw: '',
       },
       isLoading: false,
-      outputData: '',
+      outputData: null,
     };
   },
   methods: {
     search() {
       this.isLoading = true;
-      this.outputData = '';
+      this.outputData = null;
       const config = {
         params: this.form,
       };
@@ -96,6 +99,11 @@ export default {
         this.outputData = res.data;
         this.isLoading = false;
       });
+    },
+  },
+  computed: {
+    getImageSrc() {
+      return this.outputData ? `/image?fileName=${this.outputData[0].n}` : '';
     },
   },
 };

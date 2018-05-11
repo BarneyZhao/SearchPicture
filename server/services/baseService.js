@@ -136,3 +136,17 @@ exports.search = (query) => {
     return data;
   });
 };
+
+exports.getImage = (query) => {
+  console.log('get image');
+  return new Promise((resolve, reject) => {
+    if (!query.fileName) return;
+    fs.readFile(query.fileName, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
