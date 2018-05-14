@@ -57,14 +57,20 @@
             <el-button class="submitButton" @click="search" :loading="isLoading">
               {{isLoading ? '运行中' : '开始'}}
             </el-button>
+             &nbsp;
+            <el-button
+              class="playButton"
+              @click="imagePlayAct(true)"
+              :disabled="!outputData || outputData[0] === 'msg'"
+            >播放图片</el-button>
           </el-form-item>
         </el-form>
         <div>查询结果:{{outputData ? outputData.length : ''}}</div>
         <div class="outputText">{{outputData}}</div>
       </el-main>
     </el-container>
-    <div class="imagePlayer" v-if="outputData">
-      <img :src="getImageSrc">
+    <div class="imagePlayer" v-show="imagePlay" @click="imagePlayAct(false)">
+      <img class="image" :class="{'image_show': imageTransform}" :src="getImageSrc">
     </div>
   </div>
 </template>
@@ -86,6 +92,10 @@ export default {
       },
       isLoading: false,
       outputData: null,
+      imagePlay: false,
+      imageTransform: false,
+      imagePlayIndex: 0,
+      imagePlayInterval: null,
     };
   },
   methods: {
@@ -95,15 +105,38 @@ export default {
       const config = {
         params: this.form,
       };
-      axios.get('/search', config).then((res) => {
+      axios.get('/r/search', config).then((res) => {
         this.outputData = res.data;
         this.isLoading = false;
       });
     },
+    imagePlayAct(flag) {
+      this.imagePlay = flag;
+      setTimeout(() => {
+        this.imageTransform = flag;
+      }, 100);
+      if (flag) {
+        this.imagePlayInterval = setInterval(() => {
+          let tempIndex = this.imagePlayIndex + 1;
+          if (tempIndex === this.outputData.length) {
+            tempIndex = 0;
+          } else {
+            tempIndex += 1;
+          }
+          this.imageTransform = false;
+          setTimeout(() => {
+            this.imagePlayIndex = tempIndex;
+            this.imageTransform = true;
+          }, 500);
+        }, 3000);
+      } else {
+        clearInterval(this.imagePlayInterval);
+      }
+    },
   },
   computed: {
     getImageSrc() {
-      return this.outputData ? `/image?fileName=${this.outputData[0].n}` : '';
+      return this.outputData && this.imagePlayIndex > -1 ? `/r/image?fileName=${this.outputData[this.imagePlayIndex].n}` : '';
     },
   },
 };
@@ -123,8 +156,38 @@ export default {
 .submitButton {
   width: 150px;;
 }
+.playButton {
+  width: 150px;
+}
 .outputText {
-  height: 600px;
+  height: calc(100vh - 250px);
   overflow-y: auto;
+}
+.imagePlayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
+}
+.imagePlayer img {
+  max-height: 100%;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.image {
+  transition: opacity 500ms;
+  opacity: 0;
+}
+.image_show {
+  opacity: 1;
 }
 </style>

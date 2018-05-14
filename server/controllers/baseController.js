@@ -1,10 +1,10 @@
-/* eslint-disable no-console,import/no-dynamic-require */
+/* eslint-disable no-console */
 const router = require('express').Router();
 
-const baseService = require(`${global.rootpath}/server/services/baseService.js`);
+const baseService = require('../services/baseService.js');
 // var config = require(global.__base + '/config');
 
-router.get('/search', (req, res) => {
+router.get('/r/search', (req, res) => {
   baseService.search(req.query).then((data) => {
     res.json(data);
   }).catch((err) => {
@@ -13,17 +13,15 @@ router.get('/search', (req, res) => {
   });
 });
 
-router.get('/image', (req, res) => {
+router.get('/r/image', (req, res) => {
   baseService.getImage(req.query).then((data) => {
     if (!data) {
-      res.statusCode(404);
-      res.end();
+      res.status(404).end();
     } else {
       res.end(data);
     }
   }).catch(() => {
-    res.statusCode(404);
-    res.end();
+    res.status(404).end();
   });
 });
 

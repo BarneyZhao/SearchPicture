@@ -48,6 +48,9 @@ exports.search = (query) => {
     if (data.isCache) {
       return data.files;
     }
+    if (data.files.length === 0) {
+      return Promise.reject(['msg', 'search result is zero']);
+    }
     return new Promise((resolve) => {
       let workerCount = 0;
       let checkedData = [];
@@ -98,7 +101,7 @@ exports.search = (query) => {
       });
     } else {
       console.log('conditions error');
-      filterData.push('error');
+      filterData.push('msg');
       filterData.push('conditions error, but filenamecacheForsearch.txt will be created.');
     }
     return filterData;

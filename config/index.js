@@ -11,7 +11,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/search': {
+      '/r': {
         target: 'http://localhost:3000',
         secure: false,
         ignorePath: false
