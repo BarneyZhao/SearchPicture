@@ -70,7 +70,12 @@
       </el-main>
     </el-container>
     <div class="imagePlayer" v-show="imagePlay" @click="imagePlayAct(false)">
-      <img class="image" :class="{'image_show': imageTransform}" :src="getImageSrc">
+      <img class="image"
+        :style="{'transition': `opacity ${imageTransTime}ms`}"
+        v-for="(image, index) in imageList"
+        :class="{'image_show': image.isShow}"
+        :src="image.src"
+        :key="index">
     </div>
   </div>
 </template>
@@ -83,7 +88,7 @@ export default {
   data() {
     return {
       form: {
-        inputFolder: '/Users/barneyzhao/local-web-server',
+        inputFolder: '/Users/barneyzhao/Downloads',
         outputFolder: '',
         w: '',
         h: '',
@@ -93,9 +98,11 @@ export default {
       isLoading: false,
       outputData: null,
       imagePlay: false,
-      imageTransform: false,
-      imagePlayIndex: 0,
+      imageList: [],
+      imagePlayIndex: 1,
       imagePlayInterval: null,
+      imageStayTime: 3000,
+      imageTransTime: 500,
     };
   },
   methods: {
@@ -106,37 +113,53 @@ export default {
         params: this.form,
       };
       axios.get('/r/search', config).then((res) => {
-        this.outputData = res.data;
+        if (res.data && res.data.length) {
+          this.outputData = res.data;
+          this.outputData.forEach((image, index) => {
+            if (index < 2) {
+              this.imageList.push({
+                isShow: false,
+                src: this.getImageSrc(image.n),
+              });
+            }
+          });
+        }
         this.isLoading = false;
       });
     },
     imagePlayAct(flag) {
       this.imagePlay = flag;
       setTimeout(() => {
-        this.imageTransform = flag;
+        this.imageList[0].isShow = flag;
       }, 100);
       if (flag) {
         this.imagePlayInterval = setInterval(() => {
-          let tempIndex = this.imagePlayIndex + 1;
-          if (tempIndex === this.outputData.length) {
-            tempIndex = 0;
-          } else {
-            tempIndex += 1;
+          this.imagePlayIndex += 1;
+          if (this.imagePlayIndex === this.outputData.length) {
+            this.imagePlayIndex = 0;
           }
-          this.imageTransform = false;
+          let nowIndex;
+          let nextIndex;
+          this.imageList.forEach((image, index) => {
+            const imageTemp = image;
+            if (imageTemp.isShow) {
+              imageTemp.isShow = false;
+              nowIndex = index;
+            } else {
+              nextIndex = index;
+            }
+          });
           setTimeout(() => {
-            this.imagePlayIndex = tempIndex;
-            this.imageTransform = true;
-          }, 500);
-        }, 3000);
+            this.imageList[nowIndex].src = this.getImageSrc(this.outputData[this.imagePlayIndex].n);
+            this.imageList[nextIndex].isShow = true;
+          }, this.imageTransTime);
+        }, this.imageStayTime + (this.imageTransTime * 2));
       } else {
         clearInterval(this.imagePlayInterval);
       }
     },
-  },
-  computed: {
-    getImageSrc() {
-      return this.outputData && this.imagePlayIndex > -1 ? `/r/image?fileName=${this.outputData[this.imagePlayIndex].n}` : '';
+    getImageSrc(path) {
+      return `/r/image?fileName=${path}`;
     },
   },
 };
@@ -184,10 +207,11 @@ export default {
   margin: auto;
 }
 .image {
-  transition: opacity 500ms;
   opacity: 0;
+  z-index: 1;
 }
 .image_show {
   opacity: 1;
+  z-index: 9;
 }
 </style>
