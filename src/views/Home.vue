@@ -109,6 +109,7 @@ export default {
     search() {
       this.isLoading = true;
       this.outputData = null;
+      this.imageList = [];
       const config = {
         params: this.form,
       };
@@ -174,7 +175,7 @@ export default {
   padding: 0 0 0 20px;
 }
 .ratioInput {
-  width: 45%;
+  width: 50%;
 }
 .submitButton {
   width: 150px;;
