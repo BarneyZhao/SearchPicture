@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const sizeOf = require('image-size');
 
 const handler = ({ id, data }) => {

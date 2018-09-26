@@ -1,4 +1,3 @@
-/* eslint-disable no-console, newline-per-chained-call */
 const glob = require('glob');
 const path = require('path');
 const fs = require('fs');
@@ -6,8 +5,6 @@ const cpfork = require('child_process').fork;
 const numCPUs = require('os').cpus().length;
 
 const imageChild = `${global.rootpath}/server/childs/imageCheck.js`;
-
-// /Users/barneyzhao/local-web-server
 
 const getFiles = (inputFolder) => {
   console.log(`getFiles from ${inputFolder}`);
@@ -49,7 +46,7 @@ exports.search = (query) => {
       return data.files;
     }
     if (data.files.length === 0) {
-      return Promise.reject(['msg', 'search result is zero']);
+      return Promise.resolve(['msg', 'search result is zero']);
     }
     return new Promise((resolve) => {
       let workerCount = 0;
@@ -106,7 +103,7 @@ exports.search = (query) => {
     }
     return filterData;
   }).then((data) => {
-    if (!data.includes('error') && query.outputFolder) {
+    if (!data.includes('msg') && query.outputFolder) {
       console.log(`filter count : ${data.length}`);
       console.log(`output search result to ${query.outputFolder}`);
       const outputPath = `${query.outputFolder}/search-${new Date().toLocaleString().replace(/ /, '_').replace(/:/g, '-')}`;
