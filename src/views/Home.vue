@@ -112,7 +112,7 @@ export default {
       const config = {
         params: this.form,
       };
-      axios.get('/r/search', config).then((res) => {
+      axios.get('/api/search', config).then((res) => {
         if (res.data && res.data.length) {
           this.outputData = res.data;
           this.outputData.forEach((image, index) => {
@@ -159,7 +159,7 @@ export default {
       }
     },
     getImageSrc(path) {
-      return `/r/image?fileName=${path}`;
+      return `/api/image?fileName=${path}`;
     },
   },
 };

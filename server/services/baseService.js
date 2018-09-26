@@ -144,6 +144,7 @@ exports.getImage = (query) => {
   console.log('get image');
   return new Promise((resolve, reject) => {
     if (!query.fileName) return;
+    console.log('image name:' + query.fileName);
     fs.readFile(query.fileName, (err, data) => {
       if (err) {
         reject(err);

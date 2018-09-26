@@ -4,7 +4,7 @@ const router = require('express').Router();
 const baseService = require('../services/baseService.js');
 // var config = require(global.__base + '/config');
 
-router.get('/r/search', (req, res) => {
+router.get('/api/search', (req, res) => {
   baseService.search(req.query).then((data) => {
     res.json(data);
   }).catch((err) => {
@@ -13,7 +13,7 @@ router.get('/r/search', (req, res) => {
   });
 });
 
-router.get('/r/image', (req, res) => {
+router.get('/api/image', (req, res) => {
   baseService.getImage(req.query).then((data) => {
     if (!data) {
       res.status(404).end();
