@@ -7,10 +7,10 @@ module.exports = {
     'plugin:vue/essential',
     '@vue/standard'
   ],
-  /** 
+  /**
    * 0 - turn the rule off
    * 1 - turn the rule on as a warning
-   * 2 - turn the rule on as an error 
+   * 2 - turn the rule on as an error
   */
   rules: {
     // 'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -27,4 +27,4 @@ module.exports = {
   parserOptions: {
     parser: 'babel-eslint',
   },
-}
+};

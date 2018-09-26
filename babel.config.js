@@ -10,4 +10,4 @@ module.exports = {
     'syntax-dynamic-import',
     'lodash'
   ]
-}
+};

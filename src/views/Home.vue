@@ -85,7 +85,7 @@ import axios from 'axios';
 
 export default {
   name: 'Home',
-  data() {
+  data () {
     return {
       form: {
         inputFolder: '/Users/barneyzhao/Downloads',
@@ -106,7 +106,7 @@ export default {
     };
   },
   methods: {
-    search() {
+    search () {
       this.isLoading = true;
       this.outputData = null;
       this.imageList = [];
@@ -128,7 +128,7 @@ export default {
         this.isLoading = false;
       });
     },
-    imagePlayAct(flag) {
+    imagePlayAct (flag) {
       this.imagePlay = flag;
       setTimeout(() => {
         this.imageList[0].isShow = flag;
@@ -159,7 +159,7 @@ export default {
         clearInterval(this.imagePlayInterval);
       }
     },
-    getImageSrc(path) {
+    getImageSrc (path) {
       return `/api/image?fileName=${path}`;
     },
   },
