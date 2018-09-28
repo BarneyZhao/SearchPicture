@@ -1,10 +1,13 @@
 {
-  "name": "my",
+  "name": "searchpicture",
   "version": "0.1.0",
   "private": true,
+  "main": "./main/main.js",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "dev": "vue-cli-service serve",
+    "el": "NODE_ENV=dev electron .",
+    "build-v": "vue-cli-service build --no-clean",
+    "build-e": "electron-builder",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -30,7 +33,23 @@
     "@vue/cli-service": "^3.0.1",
     "babel-plugin-component": "^1.1.1",
     "babel-plugin-lodash": "^3.3.4",
+    "electron": "^3.0.1",
+    "electron-builder": "^20.28.4",
     "vue-template-compiler": "^2.5.17"
+  },
+  "build": {
+    "appId": "com.electron.searchpicture",
+    "productName": "searchpicture",
+    "directories": {
+      "output": "e_dist"
+    },
+    "files": [
+      "main/**/*",
+      "dist/**/*"
+    ],
+    "mac": {
+      "target": "dmg"
+    }
   },
   "eslintConfig": {
     "root": true,

@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import service from '../services/homeService.js';
 
 export default {
   name: 'Home',
@@ -90,8 +90,8 @@ export default {
       form: {
         inputFolder: '/Users/barneyzhao/Downloads',
         outputFolder: '',
-        w: '',
-        h: '',
+        w: '1920',
+        h: '1080',
         rh: '',
         rw: '',
       },
@@ -110,12 +110,9 @@ export default {
       this.isLoading = true;
       this.outputData = null;
       this.imageList = [];
-      const config = {
-        params: this.form,
-      };
-      axios.get('/api/search', config).then((res) => {
-        if (res.data && res.data.length) {
-          this.outputData = res.data;
+      service.search(this.form).then((data) => {
+        if (data && data.length) {
+          this.outputData = data;
           this.outputData.forEach((image, index) => {
             if (index < 2) {
               this.imageList.push({
@@ -160,7 +157,7 @@ export default {
       }
     },
     getImageSrc (path) {
-      return `/api/image?fileName=${path}`;
+      return `file://${path}`;
     },
   },
 };
