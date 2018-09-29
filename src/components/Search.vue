@@ -35,20 +35,30 @@
     <div class="col options">
       <el-form label-width="100px">
         <el-form-item label="搜索文件夹">
-          <el-input
-            v-model="form.inputFolder"
-            placeholder="路径"
-            class="folderInput"
-            clearable>
-          </el-input>
+          <div tabindex="0" class="el-upload el-upload--text">
+            <button type="button"
+              class="el-button el-button--small"
+              @click="triggerInput('inputFolder')">
+              <span>选取文件夹</span>
+            </button>
+            <input id="inputFolder" type="file" name="file"
+              class="el-upload__input" webkitdirectory
+              @change="fileInputChange('inputFolder')">
+          </div>
+          <span>&nbsp;{{this.form.inputFolder}}</span>
         </el-form-item>
         <el-form-item label="输出文件夹">
-          <el-input
-            v-model="form.outputFolder"
-            placeholder="路径"
-            class="folderInput"
-            clearable>
-          </el-input>
+          <div tabindex="0" class="el-upload el-upload--text">
+            <button type="button"
+              class="el-button el-button--small"
+              @click="triggerInput('outputFolder')">
+              <span>选取文件夹</span>
+            </button>
+            <input id="outputFolder" type="file" name="file"
+              class="el-upload__input" webkitdirectory
+              @change="fileInputChange('outputFolder')">
+          </div>
+          <span>&nbsp;{{this.form.outputFolder}}</span>
         </el-form-item>
         <el-form-item label="">
           <el-button class="submitButton" @click="search" :loading="isLoading">
@@ -63,7 +73,8 @@
         </el-form-item>
       </el-form>
       <div>查询结果:{{outputData ? outputData.length : ''}}</div>
-      <div class="outputText">{{outputData}}</div>
+      <!-- <div>{{form}}</div> -->
+      <!-- <div class="outputText">{{outputData}}</div> -->
     </div>
   </div>
 </template>
@@ -75,7 +86,7 @@ export default {
   data () {
     return {
       form: {
-        inputFolder: '/Users/barneyzhao/Downloads',
+        inputFolder: '',
         outputFolder: '',
         w: '1920',
         h: '1080',
@@ -87,6 +98,17 @@ export default {
     };
   },
   methods: {
+    triggerInput (inputId) {
+      document.getElementById(inputId).click();
+    },
+    fileInputChange (inputId) {
+      let el = document.getElementById(inputId);
+      if (el.files && el.files[0]) {
+        this.form[inputId] = el.files[0].path;
+      } else {
+        this.form[inputId] = '';
+      }
+    },
     search () {
       this.isLoading = true;
       this.service.search(this.form).then((data) => {

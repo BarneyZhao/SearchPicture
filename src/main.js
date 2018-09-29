@@ -19,6 +19,7 @@ import {
   Message,
   MessageBox,
   Notification,
+  Upload,
 } from 'element-ui';
 
 import Vue from 'vue';
@@ -41,6 +42,7 @@ Vue.use(Col);
 Vue.use(Row);
 Vue.use(Select);
 Vue.use(Option);
+Vue.use(Upload);
 
 window.Message = Message;
 window.MessageBox = MessageBox;
