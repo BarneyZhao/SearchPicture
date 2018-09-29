@@ -3,20 +3,10 @@ const path = require('path');
 const fs = require('fs');
 const cpfork = require('child_process').fork;
 const numCPUs = require('os').cpus().length;
-const { app, ipcMain } = require('electron');
 
-const imageChild = `${app.getAppPath()}/main/childs/imageCheck.js`;
+const imageChild = '../childs/imageCheck.js';
 
 const CACHE_FILE_NAME = 'search_picture_cache.txt';
-
-ipcMain.on('api-search-req', (event, arg) => {
-  search(arg).then((data) => {
-    event.sender.send('api-search-res', data);
-  }).catch((err) => {
-    console.log(err);
-    event.sender.send('api-search-res', err.message || err);
-  });
-});
 
 const getFiles = (inputFolder) => {
   console.log(`getFiles from ${inputFolder}`);
@@ -147,3 +137,5 @@ const search = (query) => {
     return data;
   });
 };
+
+module.exports = { search };

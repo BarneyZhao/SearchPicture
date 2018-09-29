@@ -1,0 +1,6 @@
+{
+  "ipc_format": {
+    "req": "ipc-{0}-req",
+    "res": "ipc-{0}-res"
+  }
+}
