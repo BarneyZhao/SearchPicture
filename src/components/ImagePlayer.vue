@@ -12,7 +12,7 @@
 <script>
 export default {
   name: 'ImagePlayer',
-  props: ['isDev', 'imagePlay', 'outputData'],
+  props: ['imagePlay', 'outputData'],
   data () {
     return {
       imageList: [],

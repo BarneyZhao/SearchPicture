@@ -1,7 +1,7 @@
 const config = {
   WINDOW_OPS: {
-    width: 800,
-    height: 600,
+    width: 1600,
+    height: 900,
   },
   DEV_URL: 'http://localhost:8080',
   PROD_URL: 'file://{0}/dist/index.html',

@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const mainConfig = require(`${app.getAppPath()}/main/main_config.js`);
+const ipc = require(`${app.getAppPath()}/main/utils/ipcStr.js`);
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -50,6 +51,11 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.on(ipc.req('full-screen'), (event, arg) => {
+  mainWindow.setFullScreen(arg);
+  event.sender.send(ipc.res('full-screen'), arg);
 });
 
 // In this file you can include the rest of your app's specific main process

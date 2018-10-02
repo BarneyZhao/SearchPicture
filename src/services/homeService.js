@@ -4,7 +4,13 @@ const service = {
   search (params) {
     return ipc.req({
       name: 'search',
-      params
+      params,
+    });
+  },
+  setFullscreen (params) {
+    return ipc.req({
+      name: 'full-screen',
+      params,
     });
   },
 };

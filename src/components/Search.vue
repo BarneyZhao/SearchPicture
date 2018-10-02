@@ -19,13 +19,13 @@
         <el-form-item label="比例">
           <el-input
             v-model.number="form.rw"
-            placeholder="比例的宽度"
+            placeholder="宽度"
             class="ratioInput"
             clearable>
           </el-input>
           <el-input
             v-model.number="form.rh"
-            placeholder="比例的高度"
+            placeholder="高度"
             class="ratioInput"
             clearable>
           </el-input>
@@ -64,17 +64,21 @@
           <el-button class="submitButton" @click="search" :loading="isLoading">
             {{isLoading ? '运行中' : '开始'}}
           </el-button>
-            &nbsp;
+          &nbsp;
           <el-button
             class="playButton"
             @click="playButton"
-            :disabled="!outputData || outputData[0] === 'msg'"
-          >播放图片</el-button>
+            :disabled="!outputData || outputData[0] === 'msg'">
+            播放图片
+          </el-button>
+          &nbsp;
+          <el-button
+            class="fullscreen"
+            @click="setFullscreen">
+            {{fullscreen ? '退出全屏' : '全屏'}}
+          </el-button>
         </el-form-item>
       </el-form>
-      <div>查询结果:{{outputData ? outputData.length : ''}}</div>
-      <!-- <div>{{form}}</div> -->
-      <!-- <div class="outputText">{{outputData}}</div> -->
     </div>
   </div>
 </template>
@@ -95,6 +99,7 @@ export default {
       },
       isLoading: false,
       outputData: null,
+      fullscreen: false,
     };
   },
   methods: {
@@ -122,6 +127,10 @@ export default {
     playButton () {
       this.$emit('playButton', true);
     },
+    setFullscreen () {
+      this.fullscreen = !this.fullscreen;
+      this.service.setFullscreen(this.fullscreen);
+    },
   },
 };
 </script>
@@ -131,14 +140,11 @@ export default {
   padding-bottom: 1px;
 }
 .conditions {
-  -webkit-flex: 0 0 300px;
-  -ms-flex: 0 0 300px;
-  flex: 0 0 300px;
-  width: 300px;
-  max-width: 300px;
-}
-.options {
-  /* min-width: 800px; */
+  -webkit-flex: 0 0 210px;
+  -ms-flex: 0 0 210px;
+  flex: 0 0 210px;
+  width: 210px;
+  max-width: 210px;
 }
 .ratioInput {
   width: 50%;
