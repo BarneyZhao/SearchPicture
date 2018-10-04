@@ -115,6 +115,10 @@ export default {
       }
     },
     search () {
+      if (!this.form.inputFolder) {
+        window.Message('请选择要搜索的文件夹');
+        return;
+      }
       this.isLoading = true;
       this.service.search(this.form).then((data) => {
         if (data && data.length) {

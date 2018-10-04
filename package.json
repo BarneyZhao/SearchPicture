@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "vue-cli-service serve",
     "el": "cross-env NODE_ENV=dev electron .",
-    "build-v": "vue-cli-service build --no-clean",
-    "build-e": "electron-builder",
+    "build": "vue-cli-service build --no-clean && electron-builder",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
