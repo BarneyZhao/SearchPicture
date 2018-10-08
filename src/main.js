@@ -16,10 +16,11 @@ import {
   Row,
   Select,
   Option,
+  Upload,
+  Radio,
   Message,
   MessageBox,
   Notification,
-  Upload,
 } from 'element-ui';
 
 import Vue from 'vue';
@@ -43,10 +44,11 @@ Vue.use(Row);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(Upload);
+Vue.use(Radio);
 
-window.Message = Message;
-window.MessageBox = MessageBox;
-window.Notification = Notification;
+Vue.prototype.$message = Message;
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$notify = Notification;
 
 new Vue({
   router,

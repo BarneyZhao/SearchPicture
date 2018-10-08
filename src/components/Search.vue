@@ -1,32 +1,38 @@
 <template>
-  <div class="row">
+  <div class="row search">
     <div class="col conditions">
-      <el-form label-width="60px">
-        <el-form-item label="宽度">
+      <el-form>
+        <el-form-item>
+          <el-radio v-model="conditionType" label="pixel">像素</el-radio>
           <el-input
             v-model.number="form.w"
-            placeholder="宽度"
+            placeholder="宽"
+            class="conditionInput"
+            :disabled="conditionType !== 'pixel'"
             clearable>
           </el-input>
-        </el-form-item>
-        <el-form-item label="高度">
           <el-input
             v-model.number="form.h"
-            placeholder="高度"
+            placeholder="高"
+            class="conditionInput"
+            :disabled="conditionType !== 'pixel'"
             clearable>
           </el-input>
         </el-form-item>
-        <el-form-item label="比例">
+        <el-form-item>
+          <el-radio v-model="conditionType" label="ratio">比例</el-radio>
           <el-input
             v-model.number="form.rw"
-            placeholder="宽度"
-            class="ratioInput"
+            placeholder="宽"
+            class="conditionInput"
+            :disabled="conditionType !== 'ratio'"
             clearable>
           </el-input>
           <el-input
             v-model.number="form.rh"
-            placeholder="高度"
-            class="ratioInput"
+            placeholder="高"
+            class="conditionInput"
+            :disabled="conditionType !== 'ratio'"
             clearable>
           </el-input>
         </el-form-item>
@@ -35,19 +41,10 @@
     <div class="col options">
       <el-form label-width="100px">
         <el-form-item label="搜索文件夹">
-          <div tabindex="0" class="el-upload el-upload--text">
-            <button type="button"
-              class="el-button el-button--small"
-              @click="triggerInput('inputFolder')">
-              <span>选取文件夹</span>
-            </button>
-            <input id="inputFolder" type="file" name="file"
-              class="el-upload__input" webkitdirectory
-              @change="fileInputChange('inputFolder')">
-          </div>
-          <span>&nbsp;{{this.form.inputFolder}}</span>
+          <el-button @click="selectSearchFloder">选取文件夹</el-button>
+          <span>&nbsp;{{this.searchFloder}}</span>
         </el-form-item>
-        <el-form-item label="输出文件夹">
+        <!-- <el-form-item label="输出文件夹">
           <div tabindex="0" class="el-upload el-upload--text">
             <button type="button"
               class="el-button el-button--small"
@@ -59,22 +56,18 @@
               @change="fileInputChange('outputFolder')">
           </div>
           <span>&nbsp;{{this.form.outputFolder}}</span>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="">
           <el-button class="submitButton" @click="search" :loading="isLoading">
             {{isLoading ? '运行中' : '开始'}}
           </el-button>
           &nbsp;
-          <el-button
-            class="playButton"
-            @click="playButton"
-            :disabled="!outputData || outputData[0] === 'msg'">
+          <el-button class="playButton" @click="imagePlayerTrigger"
+            :disabled="!canPlay">
             播放图片
           </el-button>
           &nbsp;
-          <el-button
-            class="fullscreen"
-            @click="setFullscreen">
+          <el-button class="fullscreenButton" @click="setFullscreen">
             {{fullscreen ? '退出全屏' : '全屏'}}
           </el-button>
         </el-form-item>
@@ -86,54 +79,47 @@
 <script>
 export default {
   name: 'Search',
-  props: ['service'],
+  props: ['searchFloder', 'isLoading', 'canPlay'],
   data () {
     return {
+      conditionType: 'pixel',
       form: {
-        inputFolder: '',
-        outputFolder: '',
         w: '1920',
         h: '1080',
-        rh: '',
         rw: '',
+        rh: '',
       },
-      isLoading: false,
       outputData: null,
       fullscreen: false,
     };
   },
   methods: {
-    triggerInput (inputId) {
-      document.getElementById(inputId).click();
-    },
-    fileInputChange (inputId) {
-      let el = document.getElementById(inputId);
-      if (el.files && el.files[0]) {
-        this.form[inputId] = el.files[0].path;
-      } else {
-        this.form[inputId] = '';
-      }
+    selectSearchFloder () {
+      this.$emit('selectSearchFloder');
     },
     search () {
-      if (!this.form.inputFolder) {
-        window.Message('请选择要搜索的文件夹');
+      if (!this.searchFloder) {
+        this.$notify({
+          title: '提示',
+          message: '请选择要搜索的文件夹',
+          duration: 1500,
+        });
         return;
       }
-      this.isLoading = true;
-      this.service.search(this.form).then((data) => {
-        if (data && data.length) {
-          this.outputData = data;
-          this.$emit('outputData', data);
-        }
-        this.isLoading = false;
-      });
+      let formTemp = Object.assign({}, this.form);
+      if (this.conditionType === 'pixel') {
+        formTemp.rw = formTemp.rh = '';
+      } else {
+        formTemp.w = formTemp.h = '';
+      }
+      this.$emit('search', formTemp);
     },
-    playButton () {
-      this.$emit('playButton', true);
+    imagePlayerTrigger () {
+      this.$emit('imagePlayerTrigger', true);
     },
     setFullscreen () {
       this.fullscreen = !this.fullscreen;
-      this.service.setFullscreen(this.fullscreen);
+      this.$emit('setFullscreen', this.fullscreen);
     },
   },
 };
@@ -144,23 +130,19 @@ export default {
   padding-bottom: 1px;
 }
 .conditions {
-  -webkit-flex: 0 0 210px;
-  -ms-flex: 0 0 210px;
-  flex: 0 0 210px;
-  width: 210px;
-  max-width: 210px;
+  -webkit-flex: 0 0 242px;
+  -ms-flex: 0 0 242px;
+  flex: 0 0 242px;
+  width: 242px;
+  max-width: 242px;
 }
-.ratioInput {
-  width: 50%;
+.conditionInput {
+  margin-left: 5px;
+  width: 90px;
 }
-.submitButton {
-  width: 150px;;
-}
-.playButton {
-  width: 150px;
-}
-.outputText {
-  height: calc(100vh - 250px);
-  overflow-y: auto;
+.submitButton,
+.playButton,
+.fullscreenButton {
+  width: 100px;
 }
 </style>

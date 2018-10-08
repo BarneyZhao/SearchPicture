@@ -86,7 +86,8 @@ export default {
 
 <style scoped>
 .window {
-  height: calc(100vh - 217px);
+  height: calc(100vh - 156px);
+  padding-top: 15px;
 }
 .files {
   overflow-y: auto;

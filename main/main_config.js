@@ -1,6 +1,6 @@
 const config = {
   WINDOW_OPS: {
-    width: 1600,
+    width: 1000,
     height: 900,
   },
   DEV_URL: 'http://localhost:8080',

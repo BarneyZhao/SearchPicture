@@ -9,14 +9,14 @@ const imageChild = `${app.getAppPath()}/main/childs/imageCheck.js`;
 
 const CACHE_FILE_NAME = 'search_picture_cache.txt';
 
-const getFiles = (inputFolder) => {
-  console.log(`getFiles from ${inputFolder}`);
+const getFiles = (searchFloder) => {
+  console.log(`getFiles from ${searchFloder}`);
   return new Promise((resolve, reject) => {
-    fs.readFile(`${inputFolder}/${CACHE_FILE_NAME}`, 'utf8', (err, data) => {
+    fs.readFile(`${searchFloder}/${CACHE_FILE_NAME}`, 'utf8', (err, data) => {
       if (err) {
         console.log('need to create cache file');
         console.log('running glob...');
-        glob(`${inputFolder}/**/*.{jpg,png}`, { nodir: true }, (globErr, files) => {
+        glob(`${searchFloder}/**/*.{jpg,png}`, { nodir: true }, (globErr, files) => {
           if (globErr) {
             reject(globErr);
           } else {
@@ -41,7 +41,7 @@ const getFiles = (inputFolder) => {
 const search = (query) => {
   console.log('search...');
   return Promise.resolve().then(() => {
-    return getFiles(query.inputFolder);
+    return getFiles(query.searchFloder);
   }).then((data) => {
     console.log(`files count : ${data.files.length}`);
     if (data.isCache) {
@@ -64,7 +64,7 @@ const search = (query) => {
           console.log('all childs finished.');
           resolve(checkedData);
           console.log(`writting ${CACHE_FILE_NAME}.`);
-          fs.writeFile(`${query.inputFolder}/${CACHE_FILE_NAME}`, JSON.stringify(checkedData), (writeErr) => {
+          fs.writeFile(`${query.searchFloder}/${CACHE_FILE_NAME}`, JSON.stringify(checkedData), (writeErr) => {
             if (writeErr) {
               console.log(writeErr);
             } else {
