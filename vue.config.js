@@ -58,7 +58,6 @@ module.exports = {
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:3000',
-        // target: 'https://m.mymm.com',
         secure: false,
         ignorePath: false
       }

@@ -26,6 +26,7 @@
         <div class="mini_file col" :class="{'selected': selectedIndex === index}"
           v-for="(file, index) in outputData" :key="file.n" @click="fileClick(index)">
           <img v-lazy="file.n">
+          <!-- <img :src="file.n | imagePath"> -->
           <!-- <img src="../assets/logo.png"> -->
           <!-- <div>{{getFileName(file.n)}}</div> -->
         </div>
@@ -163,6 +164,9 @@ export default {
   vertical-align: middle;
   width: 100%;
   height: 100%;
+  object-fit: contain;
+}
+.mini_file img[lazy="error"] {
   object-fit: none;
 }
 .mini_file:hover:not(.selected) {

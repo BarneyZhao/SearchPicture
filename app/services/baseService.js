@@ -5,7 +5,7 @@ const cpfork = require('child_process').fork;
 const numCPUs = require('os').cpus().length;
 const { app } = require('electron');
 
-const imageChild = `${app.getAppPath()}/main/childs/imageCheck.js`;
+const imageChild = `${app.getAppPath()}/app/childs/imageCheck.js`;
 
 const CACHE_FILE_NAME = 'search_picture_cache.txt';
 

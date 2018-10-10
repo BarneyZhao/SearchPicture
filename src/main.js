@@ -63,6 +63,14 @@ Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$notify = Notification;
 
+Vue.prototype.$getImgPath = (n) => {
+  if (window.location.hostname === 'localhost') {
+    return '/api/image?f=' + n;
+  } else {
+    return n;
+  }
+};
+
 new Vue({
   router,
   render: h => h(App)

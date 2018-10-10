@@ -2,7 +2,7 @@
   "name": "searchpicture",
   "version": "0.1.0",
   "private": true,
-  "main": "./main/main.js",
+  "main": "./app/main.js",
   "scripts": {
     "dev": "vue-cli-service serve",
     "el": "cross-env NODE_ENV=dev electron .",
@@ -44,7 +44,7 @@
       "output": "e_dist"
     },
     "files": [
-      "main/**/*",
+      "app/**/*",
       "dist/**/*",
       "config.json"
     ],

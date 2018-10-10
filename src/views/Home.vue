@@ -55,11 +55,16 @@ export default {
         searchFolder: this.searchFolder
       }, params);
       service.search(temp).then((data) => {
-        if (data && data.length) {
-          this.outputData = data;
+        if (data && Array.isArray(data)) {
+          this.outputData = data.map((d) => {
+            d.n = this.$getImgPath(d.n);
+            return d;
+          });
           if (data[0] !== 'msg') this.canPlayOrExport = true;
         }
         this.isLoading = false;
+      }).catch(err => {
+        console.log(err);
       });
     },
     imagePlayerTrigger (flag) {
