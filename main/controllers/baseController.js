@@ -10,3 +10,12 @@ ipcMain.on(ipc.req('search'), (event, arg) => {
     event.sender.send(ipc.res('search'), err.message || err);
   });
 });
+
+ipcMain.on(ipc.req('exportToFolder'), (event, arg) => {
+  service.exportToFolder(arg).then((data) => {
+    event.sender.send(ipc.res('exportToFolder'), data);
+  }).catch((err) => {
+    console.log(err);
+    event.sender.send(ipc.res('exportToFolder'), err.message || err);
+  });
+});

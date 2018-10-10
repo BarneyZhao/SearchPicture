@@ -26,9 +26,6 @@ export default {
     clickAct () {
       this.$emit('imagePlayerTrigger', false);
     },
-    getImageSrc (path) {
-      return `file://${path}`;
-    },
     intervalFun () {
       this.imagePlayIndex += 1;
       if (this.imagePlayIndex === this.outputData.length) {
@@ -46,7 +43,7 @@ export default {
         }
       });
       setTimeout(() => {
-        this.imageList[nowIndex].src = this.getImageSrc(this.outputData[this.imagePlayIndex].n);
+        this.imageList[nowIndex].src = this.outputData[this.imagePlayIndex].n;
         this.imageList[nextIndex].isShow = true;
       }, this.imageTransTime);
     },
@@ -67,12 +64,12 @@ export default {
     },
     outputData () {
       this.imageList = [];
-      if (this.outputData && this.outputData.length) {
+      if (this.outputData && Array.isArray(this.outputData)) {
         this.outputData.forEach((image, index) => {
           if (index < 2) {
             this.imageList.push({
               isShow: false,
-              src: this.getImageSrc(image.n),
+              src: image.n,
             });
           }
         });
@@ -92,16 +89,10 @@ export default {
   background-color: black;
 }
 .imagePlayer img {
-  max-height: 100%;
-  max-width: 100%;
-  width: auto;
-  height: auto;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .image {
   opacity: 0;

@@ -41,34 +41,26 @@
     <div class="col options">
       <el-form label-width="100px">
         <el-form-item label="搜索文件夹">
-          <el-button @click="selectSearchFloder">选取文件夹</el-button>
-          <span>&nbsp;{{this.searchFloder}}</span>
+          <el-button @click="selectSearchFolder">选取文件夹</el-button>
+          <span>&nbsp;{{this.searchFolder}}</span>
         </el-form-item>
-        <!-- <el-form-item label="输出文件夹">
-          <div tabindex="0" class="el-upload el-upload--text">
-            <button type="button"
-              class="el-button el-button--small"
-              @click="triggerInput('outputFolder')">
-              <span>选取文件夹</span>
-            </button>
-            <input id="outputFolder" type="file" name="file"
-              class="el-upload__input" webkitdirectory
-              @change="fileInputChange('outputFolder')">
-          </div>
-          <span>&nbsp;{{this.form.outputFolder}}</span>
-        </el-form-item> -->
         <el-form-item label="">
           <el-button class="submitButton" @click="search" :loading="isLoading">
             {{isLoading ? '运行中' : '开始'}}
           </el-button>
           &nbsp;
           <el-button class="playButton" @click="imagePlayerTrigger"
-            :disabled="!canPlay">
+            :disabled="!canPlayOrExport">
             播放图片
           </el-button>
           &nbsp;
           <el-button class="fullscreenButton" @click="setFullscreen">
             {{fullscreen ? '退出全屏' : '全屏'}}
+          </el-button>
+          &nbsp;
+          <el-button class="exportButton" @click="exportTo"
+            :disabled="!canPlayOrExport">
+            导出到文件夹
           </el-button>
         </el-form-item>
       </el-form>
@@ -79,26 +71,26 @@
 <script>
 export default {
   name: 'Search',
-  props: ['searchFloder', 'isLoading', 'canPlay'],
+  props: ['searchFolder', 'isLoading', 'canPlayOrExport'],
   data () {
     return {
-      conditionType: 'pixel',
+      conditionType: 'ratio',
       form: {
         w: '1920',
         h: '1080',
-        rw: '',
-        rh: '',
+        rw: '1',
+        rh: '1',
       },
       outputData: null,
       fullscreen: false,
     };
   },
   methods: {
-    selectSearchFloder () {
-      this.$emit('selectSearchFloder');
+    selectSearchFolder () {
+      this.$emit('selectSearchFolder');
     },
     search () {
-      if (!this.searchFloder) {
+      if (!this.searchFolder) {
         this.$notify({
           title: '提示',
           message: '请选择要搜索的文件夹',
@@ -120,6 +112,9 @@ export default {
     setFullscreen () {
       this.fullscreen = !this.fullscreen;
       this.$emit('setFullscreen', this.fullscreen);
+    },
+    exportTo () {
+      this.$emit('exportTo');
     },
   },
 };

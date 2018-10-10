@@ -9,14 +9,14 @@ const imageChild = `${app.getAppPath()}/main/childs/imageCheck.js`;
 
 const CACHE_FILE_NAME = 'search_picture_cache.txt';
 
-const getFiles = (searchFloder) => {
-  console.log(`getFiles from ${searchFloder}`);
+const getFiles = (searchFolder) => {
+  console.log(`getFiles from ${searchFolder}`);
   return new Promise((resolve, reject) => {
-    fs.readFile(`${searchFloder}/${CACHE_FILE_NAME}`, 'utf8', (err, data) => {
+    fs.readFile(`${searchFolder}/${CACHE_FILE_NAME}`, 'utf8', (err, data) => {
       if (err) {
         console.log('need to create cache file');
         console.log('running glob...');
-        glob(`${searchFloder}/**/*.{jpg,png}`, { nodir: true }, (globErr, files) => {
+        glob(`${searchFolder}/**/*.{jpg,png}`, { nodir: true }, (globErr, files) => {
           if (globErr) {
             reject(globErr);
           } else {
@@ -38,10 +38,10 @@ const getFiles = (searchFloder) => {
   });
 };
 
-const search = (query) => {
+exports.search = (query) => {
   console.log('search...');
   return Promise.resolve().then(() => {
-    return getFiles(query.searchFloder);
+    return getFiles(query.searchFolder);
   }).then((data) => {
     console.log(`files count : ${data.files.length}`);
     if (data.isCache) {
@@ -64,7 +64,7 @@ const search = (query) => {
           console.log('all childs finished.');
           resolve(checkedData);
           console.log(`writting ${CACHE_FILE_NAME}.`);
-          fs.writeFile(`${query.searchFloder}/${CACHE_FILE_NAME}`, JSON.stringify(checkedData), (writeErr) => {
+          fs.writeFile(`${query.searchFolder}/${CACHE_FILE_NAME}`, JSON.stringify(checkedData), (writeErr) => {
             if (writeErr) {
               console.log(writeErr);
             } else {
@@ -105,38 +105,38 @@ const search = (query) => {
     }
     return filterData;
   }).then((data) => {
-    if (!data.includes('msg') && query.outputFolder) {
-      console.log(`filter count : ${data.length}`);
-      console.log(`output search result to ${query.outputFolder}`);
-      const outputPath = `${query.outputFolder}/search-${new Date().toLocaleString().replace(/ /, '_').replace(/:/g, '-')}`;
-      const logTimes = 4;
-      const logCount = Math.ceil(data.length / logTimes);
-      data.forEach((file, index) => {
-        try {
-          const filename = path.basename(file.n);
-          const readStream = fs.createReadStream(file.n);
-          if (!fs.existsSync(outputPath)) {
-            fs.mkdirSync(outputPath);
-          }
-          const writeStream = fs.createWriteStream(`${outputPath}/${filename}`);
-          readStream.pipe(writeStream);
-          if (index + 1 !== data.length) {
-            for (let i = 1; i <= logTimes; i += 1) {
-              if (index + 1 === logCount * i) {
-                console.log(`output: ${index + 1}/${data.length}`);
-              }
-            }
-          } else {
-            console.log(`output: ${index + 1}/${data.length}`);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      });
-    }
+    //
     console.log('finish...');
     return data;
   });
 };
 
-module.exports = { search };
+exports.exportToFolder = ({ data, folderPath }) => {
+  console.log(`filter count : ${data.length}`);
+  console.log(`output search result to ${folderPath}`);
+  const logTimes = 4;
+  const logCount = Math.ceil(data.length / logTimes);
+  data.forEach((file, index) => {
+    try {
+      const filename = path.basename(file.n);
+      const readStream = fs.createReadStream(file.n);
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath);
+      }
+      const writeStream = fs.createWriteStream(`${folderPath}/${filename}`);
+      readStream.pipe(writeStream);
+      if (index + 1 !== data.length) {
+        for (let i = 1; i <= logTimes; i += 1) {
+          if (index + 1 === logCount * i) {
+            console.log(`output: ${index + 1}/${data.length}`);
+          }
+        }
+      } else {
+        console.log(`output: ${index + 1}/${data.length}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  return Promise.resolve();
+};

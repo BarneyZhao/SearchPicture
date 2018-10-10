@@ -16,8 +16,7 @@ const funcs = {
 const ipc = {
   req ({ name, params }) {
     return new Promise((resolve) => {
-      ipcRenderer.removeAllListeners(funcs.res(name));
-      ipcRenderer.on(funcs.res(name), (evt, arg) => {
+      ipcRenderer.once(funcs.res(name), (evt, arg) => {
         resolve(arg);
       });
       ipcRenderer.send(funcs.req(name), params);

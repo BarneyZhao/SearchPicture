@@ -1,16 +1,17 @@
 <template>
   <div class="home">
     <Search
-      :searchFloder="searchFloder"
+      :searchFolder="searchFolder"
       :isLoading="isLoading"
-      :canPlay="canPlay"
-      @selectSearchFloder="selectSearchFloder"
+      :canPlayOrExport="canPlayOrExport"
+      @selectSearchFolder="selectSearchFolder"
       @search="search"
       @imagePlayerTrigger="imagePlayerTrigger"
-      @setFullscreen="setFullscreen">
+      @setFullscreen="setFullscreen"
+      @exportTo="exportTo">
     </Search>
     <div class="line"></div>
-    <FileDisplay :outputData="outputData"></FileDisplay>
+    <FileDisplay :searchFolder="searchFolder" :outputData="outputData"></FileDisplay>
     <ImagePlayer
       :imagePlay="imagePlay"
       :outputData="outputData"
@@ -34,29 +35,29 @@ export default {
   },
   data () {
     return {
-      searchFloder: '',
+      searchFolder: '',
       outputData: [],
       isLoading: false,
-      canPlay: false,
+      canPlayOrExport: false,
       imagePlay: false,
     };
   },
   methods: {
-    selectSearchFloder () {
-      service.selectSearchFloder().then((data) => {
-        this.searchFloder = '';
-        if (data && data.length > 0) this.searchFloder = data[0];
+    selectSearchFolder () {
+      service.selectFolder('open').then((data) => {
+        this.searchFolder = '';
+        if (data && data.length > 0) this.searchFolder = data[0];
       });
     },
     search (params) {
       this.isLoading = true;
       let temp = Object.assign({
-        searchFloder: this.searchFloder
+        searchFolder: this.searchFolder
       }, params);
       service.search(temp).then((data) => {
         if (data && data.length) {
           this.outputData = data;
-          if (data[0] !== 'msg') this.canPlay = true;
+          if (data[0] !== 'msg') this.canPlayOrExport = true;
         }
         this.isLoading = false;
       });
@@ -67,6 +68,23 @@ export default {
     setFullscreen (flag) {
       service.setFullscreen(flag);
     },
+    exportTo () {
+      service.selectFolder('save').then((data) => {
+        if (data && data.length > 0) {
+          let params = {
+            data: this.outputData,
+            folderPath: data,
+          };
+          service.exportToFolder(params).then(() => {
+            this.$notify({
+              title: '提示',
+              message: '导出成功',
+              duration: 1500,
+            });
+          });
+        }
+      });
+    },
   },
 };
 </script>
@@ -75,10 +93,5 @@ export default {
 .home {
   padding: 15px;
   min-width: 900px;
-}
-.line {
-  border-bottom: 1px solid #f3f4f6;
-  box-shadow: 0 1px 5px #f1f1f1;
-  margin: 0 -15px;
 }
 </style>

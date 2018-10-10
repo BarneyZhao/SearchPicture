@@ -1,24 +1,36 @@
 <template>
-  <div class="fileDisplay row">
-    <!-- <div class="window files col" ref="scrollBody">
-      <div class="file" :class="{'selected': selectedIndex === index}"
-        v-for="(file, index) in outputData" :key="index" @click="fileClick(index)">
-        {{file.n}}
+  <div class="fileDisplay">
+    <div class="displaySetting">
+      <el-radio v-model="displayType" label="tile">平铺</el-radio>
+      <el-radio v-model="displayType" label="list">列表</el-radio>
+    </div>
+    <div class="line"></div>
+    <div class="row" v-show="displayType === 'list'">
+      <div class="window files col" ref="scrollBody">
+        <div class="file" :class="{'selected': selectedIndex === index}"
+          v-for="(file, index) in outputData" :key="index" @click="fileClick(index)">
+          {{file.n.replace(searchFolder, '')}}
+        </div>
+      </div>
+      <div class="window image col row">
+        <div class="image_pic col">
+          <img v-if="outputData && selectedIndex !== -1"
+            :src="outputData[selectedIndex].n">
+          <img v-else src="../assets/logo.png">
+        </div>
+        <div class="image_desc col"></div>
       </div>
     </div>
-    <div class="window image col" >
-      <img v-if="outputData && selectedIndex !== -1"
-        :src="outputData[selectedIndex].n">
-      <img v-else src="../assets/logo.png">
-    </div> -->
-    <div class="window mini_files col row justify-content-between" ref="mfWindow">
-      <div class="mini_file col" :class="{'selected': selectedIndex === index}"
-        v-for="(file, index) in outputData" :key="index" @click="fileClick(index)">
-        <img :src="file.n">
-        <!-- <img src="../assets/logo.png"> -->
-        <!-- <div>{{getFileName(file.n)}}</div> -->
+    <div class="row" v-show="displayType === 'tile'">
+      <div class="window mini_files col row justify-content-between" ref="mfWindow">
+        <div class="mini_file col" :class="{'selected': selectedIndex === index}"
+          v-for="(file, index) in outputData" :key="file.n" @click="fileClick(index)">
+          <img v-lazy="file.n">
+          <!-- <img src="../assets/logo.png"> -->
+          <!-- <div>{{getFileName(file.n)}}</div> -->
+        </div>
+        <div class="mini_file_placeholder col" v-for="i in placeholderCount" :key="'mfp'+i"></div>
       </div>
-      <div class="mini_file_placeholder col" v-for="i in placeholderCount" :key="'mfp'+i"></div>
     </div>
   </div>
 </template>
@@ -27,16 +39,17 @@
 // import _ from 'lodash';
 export default {
   name: 'FileDisplay',
-  props: ['outputData'],
+  props: ['searchFolder', 'outputData'],
   data () {
     return {
       selectedIndex: -1,
-      // scrollVal: 0,
+      displayType: 'list',
+      scrollVal: 0,
       placeholderCount: 0,
     };
   },
   mounted () {
-    let vm = this;
+    // let vm = this;
     // document.addEventListener('keydown', (e) => {
     //   let dir;
     //   if (e.keyCode === 37 || e.keyCode === 38) dir = '-';
@@ -64,10 +77,10 @@ export default {
     //   vm.scrollVal = document.getElementsByClassName('files')[0].scrollTop;
     // }, 300));
     //
-    window.addEventListener('resize', () => {
-      vm.checkPlaceholder();
-    });
-    vm.checkPlaceholder();
+    // window.addEventListener('resize', () => {
+    //   vm.checkPlaceholder();
+    // });
+    // vm.checkPlaceholder();
   },
   methods: {
     fileClick (index) {
@@ -77,17 +90,21 @@ export default {
     getFileName (name) {
       return name.slice(name.lastIndexOf('/') + 1);
     },
-    checkPlaceholder () {
-      this.placeholderCount = Math.ceil(this.$refs.mfWindow.getBoundingClientRect().width / 150);
-    },
+    // checkPlaceholder () {
+    //   this.placeholderCount = Math.ceil(this.$refs.mfWindow.getBoundingClientRect().width / 150);
+    // },
   },
 };
 </script>
 
 <style scoped>
+.displaySetting {
+  background-color: #fff;
+  padding: 5px 0;
+  z-index: 2;
+}
 .window {
-  height: calc(100vh - 156px);
-  padding-top: 15px;
+  height: calc(100vh - 184px);
 }
 .files {
   overflow-y: auto;
@@ -110,18 +127,30 @@ export default {
 .image {
   padding-left: 10px;
   border-left: 1px solid #f0f0f0;
+  flex-direction: column;
 }
-.image img {
+.image_pic {
+  padding: 10px 0;
+}
+.image_pic img {
   vertical-align: middle;
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+.image_desc {
+  -webkit-flex: 0 0 100px;
+  -ms-flex: 0 0 100px;
+  flex: 0 0 100px;
+  height: 100px;
+  max-height: 100px;
 }
 
 .mini_files {
   overflow-y: auto;
 }
 .mini_file, .mini_file_placeholder {
+  margin-top: 15px;
   padding: 3px;
   height: 150px;
   -webkit-flex: 0 0 150px;
@@ -134,7 +163,7 @@ export default {
   vertical-align: middle;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: none;
 }
 .mini_file:hover:not(.selected) {
   background-color: #f0fcff;
