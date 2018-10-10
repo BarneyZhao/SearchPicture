@@ -11,7 +11,13 @@
       @exportTo="exportTo">
     </Search>
     <div class="line"></div>
-    <FileDisplay :searchFolder="searchFolder" :outputData="outputData"></FileDisplay>
+    <FileDisplay
+      :searchFolder="searchFolder"
+      :outputData="outputData"
+      :selectedIndex="selectedIndex"
+      @fileClick="fileClick"
+      @contextMenuClick="contextMenuClick">
+    </FileDisplay>
     <ImagePlayer
       :imagePlay="imagePlay"
       :outputData="outputData"
@@ -37,6 +43,7 @@ export default {
     return {
       searchFolder: '',
       outputData: [],
+      selectedIndex: -1,
       isLoading: false,
       canPlayOrExport: false,
       imagePlay: false,
@@ -51,6 +58,7 @@ export default {
     },
     search (params) {
       this.isLoading = true;
+      this.selectedIndex = -1;
       let temp = Object.assign({
         searchFolder: this.searchFolder
       }, params);
@@ -66,9 +74,6 @@ export default {
       }).catch(err => {
         console.log(err);
       });
-    },
-    imagePlayerTrigger (flag) {
-      this.imagePlay = flag;
     },
     setFullscreen (flag) {
       service.setFullscreen(flag);
@@ -89,6 +94,16 @@ export default {
           });
         }
       });
+    },
+    imagePlayerTrigger (flag) {
+      this.imagePlay = flag;
+    },
+    fileClick (index) {
+      this.selectedIndex = index;
+    },
+    contextMenuClick (index) {
+      console.log('rc', index);
+      service.showContextMenu();
     },
   },
 };

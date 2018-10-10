@@ -13,6 +13,9 @@ body {
   margin: 0;
   background-color: #fff;
 }
+body:not(input) {
+  -webkit-user-select: none;
+}
 
 .row {
   display: -webkit-flex;

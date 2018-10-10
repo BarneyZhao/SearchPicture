@@ -74,7 +74,7 @@ export default {
   props: ['searchFolder', 'isLoading', 'canPlayOrExport'],
   data () {
     return {
-      conditionType: 'ratio',
+      conditionType: 'pixel',
       form: {
         w: '1920',
         h: '1080',

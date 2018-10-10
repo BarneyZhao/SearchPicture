@@ -9,26 +9,25 @@
       <div class="window files col" ref="scrollBody">
         <div class="file" :class="{'selected': selectedIndex === index}"
           v-for="(file, index) in outputData" :key="index" @click="fileClick(index)">
-          {{file.n.replace(searchFolder, '')}}
+          {{getFilePath(file.n)}}
         </div>
       </div>
       <div class="window image col row">
-        <div class="image_pic col">
-          <img v-if="outputData && selectedIndex !== -1"
-            :src="outputData[selectedIndex].n">
-          <img v-else src="../assets/logo.png">
+        <div class="image_pic col" v-if="outputData && selectedIndex !== -1">
+          <img :src="outputData[selectedIndex].n" draggable="false">
         </div>
-        <div class="image_desc col"></div>
+        <div class="image_desc col" v-if="outputData && selectedIndex !== -1">
+          <div>{{getFileName(outputData[selectedIndex].n)}}</div>
+          <div>{{`${outputData[selectedIndex].w}x${outputData[selectedIndex].h}`}}</div>
+        </div>
       </div>
     </div>
     <div class="row" v-show="displayType === 'tile'">
-      <div class="window mini_files col row justify-content-between" ref="mfWindow">
+      <div class="window mini_files col row justify-content-between">
         <div class="mini_file col" :class="{'selected': selectedIndex === index}"
-          v-for="(file, index) in outputData" :key="file.n" @click="fileClick(index)">
-          <img v-lazy="file.n">
-          <!-- <img :src="file.n | imagePath"> -->
-          <!-- <img src="../assets/logo.png"> -->
-          <!-- <div>{{getFileName(file.n)}}</div> -->
+          v-for="(file, index) in outputData" :key="file.n" @click="fileClick(index)"
+          @contextmenu="fileClick(index, 'context')">
+          <img v-lazy="file.n" draggable="false">
         </div>
         <div class="mini_file_placeholder col" v-for="i in placeholderCount" :key="'mfp'+i"></div>
       </div>
@@ -40,13 +39,12 @@
 // import _ from 'lodash';
 export default {
   name: 'FileDisplay',
-  props: ['searchFolder', 'outputData'],
+  props: ['searchFolder', 'outputData', 'selectedIndex'],
   data () {
     return {
-      selectedIndex: -1,
-      displayType: 'list',
+      displayType: 'tile',
       scrollVal: 0,
-      placeholderCount: 0,
+      placeholderCount: 20,
     };
   },
   mounted () {
@@ -77,23 +75,18 @@ export default {
     // this.$refs.scrollBody.addEventListener('scroll', _.debounce(() => {
     //   vm.scrollVal = document.getElementsByClassName('files')[0].scrollTop;
     // }, 300));
-    //
-    // window.addEventListener('resize', () => {
-    //   vm.checkPlaceholder();
-    // });
-    // vm.checkPlaceholder();
   },
   methods: {
-    fileClick (index) {
-      console.log('select', index);
-      this.selectedIndex = index;
+    fileClick (index, isContext) {
+      this.$emit('fileClick', index);
+      if (isContext) this.$emit('contextMenuClick', index);
+    },
+    getFilePath (name) {
+      return name.replace(`/api/image?f=${this.searchFolder}`, '');
     },
     getFileName (name) {
       return name.slice(name.lastIndexOf('/') + 1);
     },
-    // checkPlaceholder () {
-    //   this.placeholderCount = Math.ceil(this.$refs.mfWindow.getBoundingClientRect().width / 150);
-    // },
   },
 };
 </script>
@@ -120,7 +113,6 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  -webkit-user-select: none;
 }
 .file:hover:not(.selected) {
   background-color: #f0fcff;
@@ -137,7 +129,7 @@ export default {
   vertical-align: middle;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: scale-down;
 }
 .image_desc {
   -webkit-flex: 0 0 100px;
@@ -150,7 +142,7 @@ export default {
 .mini_files {
   overflow-y: auto;
 }
-.mini_file, .mini_file_placeholder {
+.mini_file {
   margin-top: 15px;
   padding: 3px;
   height: 150px;
@@ -164,15 +156,20 @@ export default {
   vertical-align: middle;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-}
-.mini_file img[lazy="error"] {
-  object-fit: none;
+  object-fit: scale-down;
 }
 .mini_file:hover:not(.selected) {
   background-color: #f0fcff;
 }
 .selected {
   background-color: #e3f9fd;
+}
+.mini_file_placeholder {
+  height: 1px;
+  -webkit-flex: 0 0 150px;
+  -ms-flex: 0 0 150px;
+  flex: 0 0 150px;
+  width: 150px;
+  max-width: 150px;
 }
 </style>

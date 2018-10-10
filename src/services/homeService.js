@@ -31,6 +31,17 @@ const service = {
       params,
     });
   },
+  showContextMenu () {
+    let menuTemp = [
+      {
+        label: 'Copy',
+        accelerator: 'CmdOrCtrl+C',
+        role: 'copy'
+      },
+    ];
+    let menu = ipc.remote.Menu.buildFromTemplate(menuTemp);
+    menu.popup(ipc.remote.getCurrentWindow());
+  },
 };
 
 export default service;

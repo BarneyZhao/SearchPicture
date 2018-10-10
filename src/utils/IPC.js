@@ -17,8 +17,10 @@ const ipc = {
   req ({ name, params }) {
     return new Promise((resolve) => {
       ipcRenderer.once(funcs.res(name), (evt, arg) => {
+        console.log('res:', name, arg);
         resolve(arg);
       });
+      console.log('req:', name, params);
       ipcRenderer.send(funcs.req(name), params);
     });
   },

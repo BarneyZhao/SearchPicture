@@ -1,6 +1,6 @@
 <template>
   <div class="imagePlayer" v-show="imagePlay" @click="clickAct">
-    <img class="image"
+    <img class="image" draggable="false"
       :style="{'transition': `opacity ${imageTransTime}ms`}"
       v-for="(image, index) in imageList"
       :class="{'image_show': image.isShow}"
