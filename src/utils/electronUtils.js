@@ -2,7 +2,7 @@
  * IPC: Inter-Process Communication
  */
 import config from '~/config.json';
-const { ipcRenderer, remote } = window.require('electron');
+const { ipcRenderer, remote, shell } = window.require('electron');
 
 const funcs = {
   req (name) {
@@ -13,7 +13,7 @@ const funcs = {
   },
 };
 
-const ipc = {
+const electronUtils = {
   req ({ name, params }) {
     return new Promise((resolve) => {
       ipcRenderer.once(funcs.res(name), (evt, arg) => {
@@ -25,6 +25,7 @@ const ipc = {
     });
   },
   remote,
+  shell,
 };
 
-export default ipc;
+export default electronUtils;

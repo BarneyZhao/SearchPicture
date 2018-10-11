@@ -1,46 +1,48 @@
-import ipc from '@/utils/IPC.js';
+import eu from '@/utils/electronUtils.js';
 
 const service = {
   selectFolder (type) {
     return new Promise((resolve) => {
       if (type === 'open') {
-        ipc.remote.dialog.showOpenDialog({
+        eu.remote.dialog.showOpenDialog({
           properties: ['openDirectory']
         }, resolve);
       } else {
         let date = new Date();
         let dp = `search_result_${date.getFullYear()}_${date.getMonth() + 1}_${date.getDate()}`;
-        ipc.remote.dialog.showSaveDialog({
+        eu.remote.dialog.showSaveDialog({
           defaultPath: dp
         }, resolve);
       }
     });
   },
   search (params) {
-    return ipc.req({
+    return eu.req({
       name: 'search',
       params,
     });
   },
   setFullscreen (param) {
-    ipc.remote.getCurrentWindow().setFullScreen(param);
+    eu.remote.getCurrentWindow().setFullScreen(param);
   },
   exportToFolder (params) {
-    return ipc.req({
+    return eu.req({
       name: 'exportToFolder',
       params,
     });
   },
-  showContextMenu () {
+  showContextMenu (item) {
     let menuTemp = [
       {
-        label: 'Copy',
-        accelerator: 'CmdOrCtrl+C',
-        role: 'copy'
+        label: '打开文件所在文件夹',
+        // accelerator: 'CmdOrCtrl+C',
+        click () {
+          eu.shell.showItemInFolder(item.n.replace('/api/image?f=', ''));
+        },
       },
     ];
-    let menu = ipc.remote.Menu.buildFromTemplate(menuTemp);
-    menu.popup(ipc.remote.getCurrentWindow());
+    let menu = eu.remote.Menu.buildFromTemplate(menuTemp);
+    menu.popup(eu.remote.getCurrentWindow());
   },
 };
 

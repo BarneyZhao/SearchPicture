@@ -49,13 +49,13 @@
             {{isLoading ? '运行中' : '开始'}}
           </el-button>
           &nbsp;
+          <el-button class="fullscreenButton" @click="setFullscreen">
+            {{fullscreen ? '退出全屏' : '全屏'}}
+          </el-button>
+          &nbsp;
           <el-button class="playButton" @click="imagePlayerTrigger"
             :disabled="!canPlayOrExport">
             播放图片
-          </el-button>
-          &nbsp;
-          <el-button class="fullscreenButton" @click="setFullscreen">
-            {{fullscreen ? '退出全屏' : '全屏'}}
           </el-button>
           &nbsp;
           <el-button class="exportButton" @click="exportTo"

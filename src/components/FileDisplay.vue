@@ -8,7 +8,8 @@
     <div class="row" v-show="displayType === 'list'">
       <div class="window files col" ref="scrollBody">
         <div class="file" :class="{'selected': selectedIndex === index}"
-          v-for="(file, index) in outputData" :key="index" @click="fileClick(index)">
+          v-for="(file, index) in outputData" :key="index" @click="fileClick(index)"
+          @contextmenu="fileClick(index, file)">
           {{getFilePath(file.n)}}
         </div>
       </div>
@@ -26,7 +27,7 @@
       <div class="window mini_files col row justify-content-between">
         <div class="mini_file col" :class="{'selected': selectedIndex === index}"
           v-for="(file, index) in outputData" :key="file.n" @click="fileClick(index)"
-          @contextmenu="fileClick(index, 'context')">
+          @contextmenu="fileClick(index, file)">
           <img v-lazy="file.n" draggable="false">
         </div>
         <div class="mini_file_placeholder col" v-for="i in placeholderCount" :key="'mfp'+i"></div>
@@ -77,12 +78,12 @@ export default {
     // }, 300));
   },
   methods: {
-    fileClick (index, isContext) {
+    fileClick (index, item) {
       this.$emit('fileClick', index);
-      if (isContext) this.$emit('contextMenuClick', index);
+      if (item) this.$emit('contextMenuClick', item);
     },
     getFilePath (name) {
-      return name.replace(`/api/image?f=${this.searchFolder}`, '');
+      return name.replace('/api/image?f=', '').replace(this.searchFolder, '');
     },
     getFileName (name) {
       return name.slice(name.lastIndexOf('/') + 1);
@@ -102,17 +103,18 @@ export default {
 }
 .files {
   overflow-y: auto;
-  -webkit-flex: 0 0 750px;
-  -ms-flex: 0 0 750px;
-  flex: 0 0 750px;
-  width: 750px;
-  max-width: 750px;
+  -webkit-flex: 0 0 400px;
+  -ms-flex: 0 0 400px;
+  flex: 0 0 400px;
+  width: 400px;
+  max-width: 400px;
 }
 .file {
   padding: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-radius: 2px;
 }
 .file:hover:not(.selected) {
   background-color: #f0fcff;
@@ -150,7 +152,7 @@ export default {
   -ms-flex: 0 0 150px;
   flex: 0 0 150px;
   width: 150px;
-  max-width: 150px;
+  border-radius: 2px;
 }
 .mini_file img {
   vertical-align: middle;

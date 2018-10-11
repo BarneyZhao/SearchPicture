@@ -101,9 +101,8 @@ export default {
     fileClick (index) {
       this.selectedIndex = index;
     },
-    contextMenuClick (index) {
-      console.log('rc', index);
-      service.showContextMenu();
+    contextMenuClick (item) {
+      service.showContextMenu(item);
     },
   },
 };
