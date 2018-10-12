@@ -115,6 +115,5 @@ export default {
 <style scoped>
 .home {
   padding: 15px;
-  min-width: 900px;
 }
 </style>

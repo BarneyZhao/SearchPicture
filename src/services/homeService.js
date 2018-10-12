@@ -35,7 +35,6 @@ const service = {
     let menuTemp = [
       {
         label: '打开文件所在文件夹',
-        // accelerator: 'CmdOrCtrl+C',
         click () {
           eu.shell.showItemInFolder(item.n);
         },
