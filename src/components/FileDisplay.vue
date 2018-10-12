@@ -15,7 +15,7 @@
       </div>
       <div class="window image col row">
         <div class="image_pic col" v-if="outputData && selectedIndex !== -1">
-          <img :src="outputData[selectedIndex].n" draggable="false">
+          <img :src="outputData[selectedIndex].sn" draggable="false">
         </div>
         <div class="image_desc col" v-if="outputData && selectedIndex !== -1">
           <div>{{getFileName(outputData[selectedIndex].n)}}</div>
@@ -28,7 +28,7 @@
         <div class="mini_file col" :class="{'selected': selectedIndex === index}"
           v-for="(file, index) in outputData" :key="file.n" @click="fileClick(index)"
           @contextmenu="fileClick(index, file)">
-          <img v-lazy="file.n" draggable="false">
+          <img v-lazy="file.sn" draggable="false">
         </div>
         <div class="mini_file_placeholder col" v-for="i in placeholderCount" :key="'mfp'+i"></div>
       </div>
@@ -83,7 +83,7 @@ export default {
       if (item) this.$emit('contextMenuClick', item);
     },
     getFilePath (name) {
-      return name.replace('/api/image?f=', '').replace(this.searchFolder, '');
+      return name.replace(this.searchFolder, '');
     },
     getFileName (name) {
       return name.slice(name.lastIndexOf('/') + 1);

@@ -47,6 +47,7 @@ export default {
       isLoading: false,
       canPlayOrExport: false,
       imagePlay: false,
+      nowConditions: {},
     };
   },
   methods: {
@@ -59,14 +60,14 @@ export default {
     search (params) {
       this.isLoading = true;
       this.selectedIndex = -1;
+      this.nowConditions = { ...params };
       let temp = Object.assign({
         searchFolder: this.searchFolder
       }, params);
       service.search(temp).then((data) => {
         if (data && Array.isArray(data)) {
           this.outputData = data.map((d) => {
-            d.n = this.$getImgPath(d.n);
-            return d;
+            return { sn: this.$getImgPath(d.n), ...d };
           });
           if (data[0] !== 'msg') this.canPlayOrExport = true;
         }
@@ -79,7 +80,10 @@ export default {
       service.setFullscreen(flag);
     },
     exportTo () {
-      service.selectFolder('save').then((data) => {
+      let conditionStr = this.nowConditions.w
+        ? this.nowConditions.w + '-' + this.nowConditions.h
+        : this.nowConditions.rw + '-' + this.nowConditions.rh;
+      service.selectFolder('save', conditionStr).then((data) => {
         if (data && data.length > 0) {
           let params = {
             data: this.outputData,

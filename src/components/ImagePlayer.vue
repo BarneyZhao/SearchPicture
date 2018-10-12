@@ -69,7 +69,7 @@ export default {
           if (index < 2) {
             this.imageList.push({
               isShow: false,
-              src: image.n,
+              src: image.sn,
             });
           }
         });

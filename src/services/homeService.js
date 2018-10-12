@@ -1,7 +1,7 @@
 import eu from '@/utils/electronUtils.js';
 
 const service = {
-  selectFolder (type) {
+  selectFolder (type, conditionStr) {
     return new Promise((resolve) => {
       if (type === 'open') {
         eu.remote.dialog.showOpenDialog({
@@ -9,7 +9,7 @@ const service = {
         }, resolve);
       } else {
         let date = new Date();
-        let dp = `search_result_${date.getFullYear()}_${date.getMonth() + 1}_${date.getDate()}`;
+        let dp = `search_result_${date.getFullYear()}_${date.getMonth() + 1}_${date.getDate()}_by_${conditionStr}`;
         eu.remote.dialog.showSaveDialog({
           defaultPath: dp
         }, resolve);
@@ -37,7 +37,7 @@ const service = {
         label: '打开文件所在文件夹',
         // accelerator: 'CmdOrCtrl+C',
         click () {
-          eu.shell.showItemInFolder(item.n.replace('/api/image?f=', ''));
+          eu.shell.showItemInFolder(item.n);
         },
       },
     ];
