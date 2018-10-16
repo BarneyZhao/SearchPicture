@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu } = require('electron');
 const mainConfig = require(`${app.getAppPath()}/app/main_config.js`);
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -8,7 +8,7 @@ let mainWindow;
 
 let isDev = process.env.NODE_ENV === 'dev';
 
-function createWindow () {
+const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow(mainConfig.WINDOW_OPS);
 
@@ -19,7 +19,9 @@ function createWindow () {
   mainWindow.loadURL(url);
 
   // Open the DevTools.
-  if (isDev || mainConfig.IS_OPEN_DEV_TOOLS) mainWindow.webContents.openDevTools();
+  if (isDev) mainWindow.webContents.openDevTools();
+
+  console.log(app.getName());
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -28,12 +30,23 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
-}
+};
+
+const setAppMenus = () => {
+  let template = mainConfig.APP_MENUS;
+  if (process.platform === 'darwin') {
+    template.unshift(mainConfig.MAC_MENUS);
+  }
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+};
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  createWindow();
+  setAppMenus();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {

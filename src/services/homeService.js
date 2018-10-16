@@ -22,8 +22,9 @@ const service = {
       params,
     });
   },
-  setFullscreen (param) {
-    eu.remote.getCurrentWindow().setFullScreen(param);
+  toggleFullscreen () {
+    let cw = eu.remote.getCurrentWindow();
+    cw.setFullScreen(!cw.isFullScreen());
   },
   exportToFolder (params) {
     return eu.req({

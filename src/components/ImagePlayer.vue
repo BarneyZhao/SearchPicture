@@ -43,7 +43,7 @@ export default {
         }
       });
       setTimeout(() => {
-        this.imageList[nowIndex].src = this.outputData[this.imagePlayIndex].n;
+        this.imageList[nowIndex].src = this.outputData[this.imagePlayIndex].sn;
         this.imageList[nextIndex].isShow = true;
       }, this.imageTransTime);
     },

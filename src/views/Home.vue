@@ -7,7 +7,7 @@
       @selectSearchFolder="selectSearchFolder"
       @search="search"
       @imagePlayerTrigger="imagePlayerTrigger"
-      @setFullscreen="setFullscreen"
+      @toggleFullscreen="toggleFullscreen"
       @exportTo="exportTo">
     </Search>
     <div class="line"></div>
@@ -76,8 +76,8 @@ export default {
         console.log(err);
       });
     },
-    setFullscreen (flag) {
-      service.setFullscreen(flag);
+    toggleFullscreen () {
+      service.toggleFullscreen();
     },
     exportTo () {
       let conditionStr = this.nowConditions.w
@@ -115,5 +115,6 @@ export default {
 <style scoped>
 .home {
   padding: 15px;
+  /* background: linear-gradient(#c9d6ff,#e2e2e2); */
 }
 </style>

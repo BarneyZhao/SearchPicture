@@ -44,7 +44,7 @@ module.exports = {
     // config.plugins.delete(`prefetch-${envConfig.pageName}`);
 
     // copy files from public folder to dist folder
-    // config.plugins.delete('copy');
+    config.plugins.delete('copy');
 
     // console.log(config);
   },

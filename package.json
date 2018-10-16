@@ -1,13 +1,14 @@
 {
   "name": "searchpicture",
+  "productName": "Search Picture",
   "version": "0.1.0",
   "private": true,
   "main": "./app/main.js",
   "scripts": {
     "dev": "vue-cli-service serve",
     "el": "cross-env NODE_ENV=dev electron .",
-    "build": "vue-cli-service build --no-clean && electron-builder",
-    "build-win": "electron-builder --win --x64",
+    "build": "vue-cli-service build --no-clean && cross-env NODE_ENV=prod electron-builder",
+    "build-win": "cross-env NODE_ENV=prod electron-builder --win --x64",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -40,7 +41,6 @@
   },
   "build": {
     "appId": "com.electron.searchpicture",
-    "productName": "Search Picture",
     "directories": {
       "output": "e_dist"
     },
@@ -50,10 +50,12 @@
       "config.json"
     ],
     "mac": {
-      "target": "dmg"
+      "target": "dmg",
+      "icon": "public/el_icon.png"
     },
     "win": {
-      "target": "zip"
+      "target": "zip",
+      "icon": "public/el_icon.png"
     }
   },
   "eslintConfig": {

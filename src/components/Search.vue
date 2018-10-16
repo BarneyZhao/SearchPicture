@@ -45,18 +45,14 @@
           <span>&nbsp;{{this.searchFolder}}</span>
         </el-form-item>
         <el-form-item label="">
-          <el-button class="submitButton" @click="search" :loading="isLoading">
-            {{isLoading ? '运行中' : '开始'}}
-          </el-button>
+          <el-button class="submitButton" @click="search"
+            :loading="isLoading">{{isLoading ? '运行中' : '开始'}}</el-button>
           &nbsp;
-          <el-button class="fullscreenButton" @click="setFullscreen">
-            {{fullscreen ? '退出全屏' : '全屏'}}
-          </el-button>
+          <el-button class="fullscreenButton"
+            @click="toggleFullscreen">切换全屏</el-button>
           &nbsp;
           <el-button class="playButton" @click="imagePlayerTrigger"
-            :disabled="!canPlayOrExport">
-            播放图片
-          </el-button>
+            :disabled="!canPlayOrExport">播放图片</el-button>
           &nbsp;
           <el-button class="exportButton" @click="exportTo"
             :disabled="!canPlayOrExport">
@@ -82,7 +78,6 @@ export default {
         rh: '1',
       },
       outputData: null,
-      fullscreen: false,
     };
   },
   methods: {
@@ -109,9 +104,8 @@ export default {
     imagePlayerTrigger () {
       this.$emit('imagePlayerTrigger', true);
     },
-    setFullscreen () {
-      this.fullscreen = !this.fullscreen;
-      this.$emit('setFullscreen', this.fullscreen);
+    toggleFullscreen () {
+      this.$emit('toggleFullscreen');
     },
     exportTo () {
       this.$emit('exportTo');
