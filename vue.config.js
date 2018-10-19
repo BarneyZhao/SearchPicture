@@ -27,7 +27,7 @@ module.exports = {
     // }
 
     config.resolve.alias
-      .set('vue$', 'vue/dist/vue.esm.js')
+      // .set('vue$', 'vue/dist/vue.esm.js')
       .set('~', path.join(__dirname, '/'))
       .set('@', path.join(__dirname, '/src'));
 

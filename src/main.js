@@ -21,6 +21,7 @@ import {
   Message,
   MessageBox,
   Notification,
+  InputNumber,
 } from 'element-ui';
 
 import Vue from 'vue';
@@ -58,6 +59,7 @@ Vue.use(Select);
 Vue.use(Option);
 Vue.use(Upload);
 Vue.use(Radio);
+Vue.use(InputNumber);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;

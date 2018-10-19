@@ -21,8 +21,6 @@ const createWindow = () => {
   // Open the DevTools.
   if (isDev) mainWindow.webContents.openDevTools();
 
-  console.log(app.getName());
-
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows

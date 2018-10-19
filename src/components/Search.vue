@@ -41,23 +41,21 @@
     <div class="col options">
       <el-form label-width="100px">
         <el-form-item label="搜索文件夹">
-          <el-button @click="selectSearchFolder">选取文件夹</el-button>
+          <el-button @click="selectSearchFolder" onfocus="blur()">选取文件夹</el-button>
           <span>&nbsp;{{this.searchFolder}}</span>
         </el-form-item>
         <el-form-item label="">
-          <el-button class="submitButton" @click="search"
+          <el-button class="submitButton" @click="search" onfocus="blur()"
             :loading="isLoading">{{isLoading ? '运行中' : '开始'}}</el-button>
           &nbsp;
-          <el-button class="fullscreenButton"
+          <el-button class="fullscreenButton" onfocus="blur()"
             @click="toggleFullscreen">切换全屏</el-button>
           &nbsp;
-          <el-button class="playButton" @click="imagePlayerTrigger"
+          <el-button class="playButton" @click="imagePlayerTrigger" onfocus="blur()"
             :disabled="!canPlayOrExport">播放图片</el-button>
           &nbsp;
-          <el-button class="exportButton" @click="exportTo"
-            :disabled="!canPlayOrExport">
-            导出到文件夹
-          </el-button>
+          <el-button class="exportButton" @click="exportTo" onfocus="blur()"
+            :disabled="!canPlayOrExport">导出到文件夹</el-button>
         </el-form-item>
       </el-form>
     </div>
