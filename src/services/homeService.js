@@ -24,7 +24,11 @@ const service = {
   },
   toggleFullscreen () {
     let cw = eu.remote.getCurrentWindow();
-    cw.setFullScreen(!cw.isFullScreen());
+    let isFullScreen = cw.isFullScreen();
+    if (process.platform === 'win32') {
+      cw.setMenuBarVisibility(isFullScreen);
+    }
+    cw.setFullScreen(!isFullScreen);
   },
   exportToFolder (params) {
     return eu.req({
