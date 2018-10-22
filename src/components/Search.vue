@@ -41,7 +41,7 @@
     <div class="col options">
       <el-form label-width="100px">
         <el-form-item label="搜索文件夹">
-          <el-button @click="selectSearchFolder" onfocus="blur()">选取文件夹</el-button>
+          <el-button @click="selectSearchFolder" size="small" onfocus="blur()">选择</el-button>
           <span>&nbsp;{{this.searchFolder}}</span>
         </el-form-item>
         <el-form-item label="">
@@ -72,8 +72,8 @@ export default {
       form: {
         w: '1920',
         h: '1080',
-        rw: '1',
-        rh: '1',
+        rw: '16',
+        rh: '9',
       },
       outputData: null,
     };

@@ -39,6 +39,12 @@ const service = {
   showContextMenu (item) {
     let menuTemp = [
       {
+        label: '打开文件',
+        click () {
+          eu.shell.openItem(item.n);
+        },
+      },
+      {
         label: '打开文件所在文件夹',
         click () {
           eu.shell.showItemInFolder(item.n);
