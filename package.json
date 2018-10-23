@@ -5,9 +5,11 @@
   "private": true,
   "main": "./app/main.js",
   "scripts": {
-    "dev": "vue-cli-service serve",
+    "v": "vue-cli-service serve",
     "el": "cross-env NODE_ENV=dev electron .",
-    "build": "vue-cli-service build --no-clean && cross-env NODE_ENV=prod electron-builder",
+    "build-vue": "vue-cli-service build --no-clean",
+    "build-el": "cross-env NODE_ENV=prod electron-builder",
+    "build": "npm run build-vue && npm run build-el",
     "build-win": "cross-env NODE_ENV=prod electron-builder --win --x64",
     "lint": "vue-cli-service lint"
   },
@@ -51,11 +53,11 @@
     ],
     "mac": {
       "target": "dmg",
-      "icon": "public/el_icon.png"
+      "icon": "public/icon.icns"
     },
     "win": {
       "target": "zip",
-      "icon": "public/el_icon.png"
+      "icon": "public/icon.ico"
     }
   },
   "eslintConfig": {

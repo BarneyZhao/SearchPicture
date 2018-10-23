@@ -17,8 +17,8 @@
         <ImagePreview v-if="outputData && selectedIndex !== -1" :imgObj="outputData[selectedIndex]"></ImagePreview>
       </div>
     </div>
-    <div class="row" v-show="displayType === 'tile'">
-      <div class="window mini_files col row justify-content-between">
+    <div class="window mini_files" v-show="displayType === 'tile'">
+      <div class="row justify-content-between">
         <div class="mini_file col" :class="{'selected': selectedIndex === index}"
           v-for="(file, index) in outputData" :key="file.n" @click="fileClick(index)"
           @contextmenu="fileClick(index, file)">
@@ -81,9 +81,9 @@ export default {
         } else {
           vm.previewImage = null;
         }
+        e.preventDefault();
+        e.stopPropagation();
       }
-      e.preventDefault();
-      e.stopPropagation();
     });
     // this.$refs.scrollBody.addEventListener('scroll', _.debounce(() => {
     //   vm.scrollVal = document.getElementsByClassName('files')[0].scrollTop;

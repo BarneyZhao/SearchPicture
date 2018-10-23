@@ -117,11 +117,11 @@ export default {
   padding-bottom: 1px;
 }
 .conditions {
-  -webkit-flex: 0 0 242px;
-  -ms-flex: 0 0 242px;
-  flex: 0 0 242px;
-  width: 242px;
-  max-width: 242px;
+  -webkit-flex: 0 0 245px;
+  -ms-flex: 0 0 245px;
+  flex: 0 0 245px;
+  width: 245px;
+  max-width: 245px;
 }
 .conditionInput {
   margin-left: 5px;

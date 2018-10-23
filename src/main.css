@@ -4,7 +4,8 @@
   box-sizing: border-box;
 }
 body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
+  font: caption;
   color: #333;
   font-weight: 400;
   font-size: 14px;
