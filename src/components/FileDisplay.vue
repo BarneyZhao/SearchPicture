@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="image_preview" v-show="isShowPreview" v-if="previewImage">
-      <ImagePreview :imgObj="previewImage"></ImagePreview>
+      <ImagePreview :imgObj="previewImage" @imgClick="closePreview"></ImagePreview>
     </div>
   </div>
 </template>
@@ -54,6 +54,7 @@ export default {
   mounted () {
     let vm = this;
     document.addEventListener('keydown', (e) => {
+      console.log(e.keyCode);
       // let dir;
       // if (e.keyCode === 37 || e.keyCode === 38) dir = '-';
       // if (e.keyCode === 39 || e.keyCode === 40) dir = '+';
@@ -73,8 +74,8 @@ export default {
       //     vm.$refs.scrollBody.scrollTop = vm.scrollVal;
       //   }
       // });
+      // 空格键预览
       if (e.keyCode === 32 && vm.selectedIndex > -1) {
-        console.log('show:', vm.outputData[vm.selectedIndex]);
         vm.isShowPreview = !vm.isShowPreview;
         if (vm.isShowPreview) {
           vm.previewImage = vm.outputData[vm.selectedIndex];
@@ -83,6 +84,10 @@ export default {
         }
         e.preventDefault();
         e.stopPropagation();
+      }
+      // esc键退出预览
+      if (e.keyCode === 27 && vm.isShowPreview) {
+        vm.closePreview();
       }
     });
     // this.$refs.scrollBody.addEventListener('scroll', _.debounce(() => {
@@ -100,6 +105,10 @@ export default {
     getFileName (name) {
       return name.slice(name.lastIndexOf('/') + 1);
     },
+    closePreview () {
+      this.isShowPreview = false;
+      this.previewImage = null;
+    },
   },
 };
 </script>
@@ -111,7 +120,7 @@ export default {
   z-index: 2;
 }
 .window {
-  height: calc(100vh - 184px);
+  height: calc(100vh - 185px);
 }
 .files {
   overflow-y: auto;

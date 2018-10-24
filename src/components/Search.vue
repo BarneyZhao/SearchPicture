@@ -3,36 +3,36 @@
     <div class="col conditions">
       <el-form>
         <el-form-item>
-          <el-radio v-model="conditionType" label="pixel">像素</el-radio>
+          <el-radio v-model="form.conditionType" label="pixel">像素</el-radio>
           <el-input
             v-model.number="form.w"
             placeholder="宽"
             class="conditionInput"
-            :disabled="conditionType !== 'pixel'"
+            :disabled="form.conditionType !== 'pixel'"
             clearable>
           </el-input>
           <el-input
             v-model.number="form.h"
             placeholder="高"
             class="conditionInput"
-            :disabled="conditionType !== 'pixel'"
+            :disabled="form.conditionType !== 'pixel'"
             clearable>
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-radio v-model="conditionType" label="ratio">比例</el-radio>
+          <el-radio v-model="form.conditionType" label="ratio">比例</el-radio>
           <el-input
             v-model.number="form.rw"
             placeholder="宽"
             class="conditionInput"
-            :disabled="conditionType !== 'ratio'"
+            :disabled="form.conditionType !== 'ratio'"
             clearable>
           </el-input>
           <el-input
             v-model.number="form.rh"
             placeholder="高"
             class="conditionInput"
-            :disabled="conditionType !== 'ratio'"
+            :disabled="form.conditionType !== 'ratio'"
             clearable>
           </el-input>
         </el-form-item>
@@ -68,8 +68,8 @@ export default {
   props: ['searchFolder', 'isLoading', 'canPlayOrExport'],
   data () {
     return {
-      conditionType: 'pixel',
       form: {
+        conditionType: 'pixel',
         w: '1920',
         h: '1080',
         rw: '16',
@@ -91,13 +91,7 @@ export default {
         });
         return;
       }
-      let formTemp = Object.assign({}, this.form);
-      if (this.conditionType === 'pixel') {
-        formTemp.rw = formTemp.rh = '';
-      } else {
-        formTemp.w = formTemp.h = '';
-      }
-      this.$emit('search', formTemp);
+      this.$emit('search', this.form);
     },
     imagePlayerTrigger () {
       this.$emit('imagePlayerTrigger', true);

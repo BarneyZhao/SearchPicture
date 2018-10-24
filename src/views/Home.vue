@@ -65,11 +65,18 @@ export default {
         searchFolder: this.searchFolder
       }, params);
       service.search(temp).then((data) => {
-        if (data && Array.isArray(data)) {
-          this.outputData = data.map((d) => {
+        if (data && Array.isArray(data.images)) {
+          this.outputData = data.images.map((d) => {
             return { sn: this.$getImgPath(d.n), ...d };
           });
-          if (data[0] !== 'msg') this.canPlayOrExport = true;
+          if (this.outputData.length > 0) this.canPlayOrExport = true;
+          if (data.msg) {
+            this.$notify({
+              title: '提示',
+              message: data.msg,
+              duration: 1500,
+            });
+          }
         }
         this.isLoading = false;
       }).catch(err => {

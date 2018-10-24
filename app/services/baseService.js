@@ -140,29 +140,43 @@ exports.search = (q) => {
     });
   }).then((images) => {
     // files filter by conditions
-    const filteredImages = [];
-    if ((q.w && q.h) || (q.rw && q.rh)) {
+    let msg;
+    let filteredImages = [];
+    let testType = 0;
+    if (q.conditionType === 'pixel' && (q.w || q.h)) testType = 1;
+    if (q.conditionType === 'ratio' && q.rw && q.rh) testType = 2;
+    if (testType !== 0) {
       images.forEach((image) => {
-        if (
-          q.w && q.h &&
-          Number.parseInt(q.w, 0) === image.w &&
-          Number.parseInt(q.h, 0) === image.h
-        ) {
-          filteredImages.push(image);
-        } else if (
-          q.rw && q.rh &&
-          (image.w / image.h).toFixed(2) ===
-          (Number.parseInt(q.rw, 0) / Number.parseInt(q.rh, 0)).toFixed(2)
-        ) {
-          filteredImages.push(image);
+        let flag;
+        if (testType === 1) {
+          let testW = Number.parseInt(q.w, 0) === image.w;
+          let testH = Number.parseInt(q.h, 0) === image.h;
+          if (
+            (q.w && q.h && testW && testH) ||
+            (q.w && !q.h && testW) ||
+            (!q.w && q.h && testH)
+          ) {
+            flag = true;
+          }
+        } else if (testType === 2) {
+          if (
+            (image.w / image.h).toFixed(2) ===
+            (Number.parseInt(q.rw, 0) / Number.parseInt(q.rh, 0)).toFixed(2)
+          ) {
+            flag = true;
+          }
         }
+        if (flag) filteredImages.push(image);
       });
     } else {
-      filteredImages.push('msg');
-      filteredImages.push(`conditions error, but ${CACHE_FILE_NAME} has created.`);
+      msg = '没有搜索条件最多显示50张';
+      filteredImages.push(...images.slice(0, 50));
     }
     // console.log('finish...');
-    return filteredImages;
+    return {
+      images: filteredImages,
+      msg,
+    };
   });
 };
 

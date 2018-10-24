@@ -1,6 +1,6 @@
 <template>
   <div class="row preview">
-    <div class="image_pic col">
+    <div class="image_pic col" @click="imgClick">
       <img :src="imgObj.sn" draggable="false">
     </div>
     <div class="image_desc col">
@@ -22,6 +22,9 @@ export default {
   methods: {
     getFileName (name) {
       return name.slice(name.lastIndexOf('/') + 1);
+    },
+    imgClick () {
+      this.$emit('imgClick');
     },
   },
 };
