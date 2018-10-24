@@ -6,7 +6,7 @@
     </div>
     <div class="line"></div>
     <div class="row" v-show="displayType === 'list'">
-      <div class="window files col" ref="scrollBody">
+      <div class="window files col" :class="{'windows_scrollbar': isWindows}" ref="scrollBody">
         <div class="file" :class="{'selected': selectedIndex === index}"
           v-for="(file, index) in outputData" :key="index" @click="fileClick(index)"
           @contextmenu="fileClick(index, file)">
@@ -17,7 +17,7 @@
         <ImagePreview v-if="outputData && selectedIndex !== -1" :imgObj="outputData[selectedIndex]"></ImagePreview>
       </div>
     </div>
-    <div class="window mini_files" v-show="displayType === 'tile'">
+    <div class="window mini_files" :class="{'windows_scrollbar': isWindows}" v-show="displayType === 'tile'">
       <div class="row justify-content-between">
         <div class="mini_file col" :class="{'selected': selectedIndex === index}"
           v-for="(file, index) in outputData" :key="file.n" @click="fileClick(index)"
@@ -100,7 +100,7 @@ export default {
       if (item) this.$emit('contextMenuClick', item);
     },
     getFilePath (name) {
-      return name.replace(this.searchFolder, '');
+      return name.replace(this.searchFolder.replace(/\\/g, '/'), '');
     },
     getFileName (name) {
       return name.slice(name.lastIndexOf('/') + 1);
@@ -108,6 +108,11 @@ export default {
     closePreview () {
       this.isShowPreview = false;
       this.previewImage = null;
+    },
+  },
+  computed: {
+    isWindows () {
+      return this.$PLATFORM === 'win32';
     },
   },
 };
@@ -121,6 +126,21 @@ export default {
 }
 .window {
   height: calc(100vh - 185px);
+}
+.windows_scrollbar::-webkit-scrollbar {
+  width: 4px;
+  background-color: transparent;
+}
+.windows_scrollbar::-webkit-scrollbar-button {
+  display: none;
+}
+.windows_scrollbar::-webkit-scrollbar-track {
+  display: none;
+}
+.windows_scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color:rgba(0,0,0,.2);
 }
 .files {
   overflow-y: auto;

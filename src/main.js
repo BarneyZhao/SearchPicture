@@ -73,6 +73,8 @@ Vue.prototype.$getImgPath = (n) => {
   }
 };
 
+Vue.prototype.$PLATFORM = process.platform;
+
 new Vue({
   router,
   render: h => h(App)
