@@ -54,7 +54,24 @@ export default {
   mounted () {
     let vm = this;
     document.addEventListener('keydown', (e) => {
-      console.log(e.keyCode);
+      // console.log(e.keyCode);
+      switch (e.keyCode) {
+        case 32: // 空格键预览
+          if (vm.selectedIndex > -1) {
+            vm.isShowPreview = !vm.isShowPreview;
+            if (vm.isShowPreview) {
+              vm.previewImage = vm.outputData[vm.selectedIndex];
+            } else {
+              vm.previewImage = null;
+            }
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          break;
+        case 27: // esc键退出预览
+          if (vm.isShowPreview) vm.closePreview();
+          break;
+      }
       // let dir;
       // if (e.keyCode === 37 || e.keyCode === 38) dir = '-';
       // if (e.keyCode === 39 || e.keyCode === 40) dir = '+';
@@ -74,21 +91,6 @@ export default {
       //     vm.$refs.scrollBody.scrollTop = vm.scrollVal;
       //   }
       // });
-      // 空格键预览
-      if (e.keyCode === 32 && vm.selectedIndex > -1) {
-        vm.isShowPreview = !vm.isShowPreview;
-        if (vm.isShowPreview) {
-          vm.previewImage = vm.outputData[vm.selectedIndex];
-        } else {
-          vm.previewImage = null;
-        }
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      // esc键退出预览
-      if (e.keyCode === 27 && vm.isShowPreview) {
-        vm.closePreview();
-      }
     });
     // this.$refs.scrollBody.addEventListener('scroll', _.debounce(() => {
     //   vm.scrollVal = document.getElementsByClassName('files')[0].scrollTop;
