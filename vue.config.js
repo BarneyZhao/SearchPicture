@@ -1,22 +1,22 @@
-const webpack = require('webpack');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+// const webpack = require('webpack');
+// const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-  baseUrl: '',
-  configureWebpack: {
-    plugins: [
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-      new LodashModuleReplacementPlugin({
-        shorthands: true,
-        collections: true, // Support objects in “Collection” methods.
-      })
-    ]
-  },
+  publicPath: '',
+  // configureWebpack: {
+  //   plugins: [
+  //     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+  //     new LodashModuleReplacementPlugin({
+  //       shorthands: true,
+  //       collections: true, // Support objects in “Collection” methods.
+  //     })
+  //   ]
+  // },
   // a chaining API to generate and simplify the modification of Webpack configurations
   chainWebpack: (config) => {
     // console.log(config);
-    config.target('electron-renderer');
+    // config.target('electron-renderer');
 
     // config.resolve.alias
     //   .set('vue$', 'vue/dist/vue.esm.js')

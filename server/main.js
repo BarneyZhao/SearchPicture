@@ -5,19 +5,19 @@ const path = require('path');
 // const config = require(path.join(__dirname, '/config'));
 const bodyParser = require('body-parser');
 // app properties setting
-app.use(express.static(path.join(__dirname, '/dist')));
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/../dist')));
+// app.use(express.static(path.join(__dirname, '/public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-global.rootpath = __dirname;
+// global.rootpath = __dirname;
 
 // middleware
-app.use(require('./middlewares/crossOrigin.js'));
+app.use(require('./middlewares/crossOrigin'));
 
 // routes setting
-app.use(require('./controllers/baseController.js'));
+app.use(require('./controllers/baseController'));
 
 // server startup
 const server = app.listen(process.env.PORT || 3000, function () {

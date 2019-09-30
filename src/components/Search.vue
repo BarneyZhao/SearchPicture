@@ -41,8 +41,17 @@
     <div class="col options">
       <el-form label-width="100px">
         <el-form-item label="搜索文件夹">
-          <el-button @click="selectSearchFolder" size="small" onfocus="blur()">选择</el-button>
-          <span>&nbsp;{{this.searchFolder}}</span>
+          <template v-if="isE">
+            <el-button @click="selectSearchFolder" size="small" onfocus="blur()">选择</el-button>
+            <span>&nbsp;{{this.searchFolder}}</span>
+          </template>
+          <el-input
+            v-else
+            v-model="searchFolderTemp"
+            @blur="folderTempInputBlur"
+            placeholder="文件夹路径"
+            clearable>
+          </el-input>
         </el-form-item>
         <el-form-item label="">
           <el-button class="submitButton" @click="search" onfocus="blur()"
@@ -75,18 +84,27 @@ export default {
         rw: '16',
         rh: '9',
       },
+      searchFolderTemp: '',
       outputData: null,
     };
+  },
+  computed: {
+    isE () {
+      return this.$IS_E('slient');
+    },
   },
   methods: {
     selectSearchFolder () {
       this.$emit('selectSearchFolder');
     },
+    folderTempInputBlur () {
+      this.$emit('inputSearchFolder', this.searchFolderTemp);
+    },
     search () {
       if (!this.searchFolder) {
         this.$notify({
           title: '提示',
-          message: '请选择要搜索的文件夹',
+          message: `请${this.isE ? '选择' : '输入'}要搜索的文件夹`,
           duration: 1500,
         });
         return;
@@ -111,11 +129,11 @@ export default {
   padding-bottom: 1px;
 }
 .conditions {
-  -webkit-flex: 0 0 245px;
-  -ms-flex: 0 0 245px;
-  flex: 0 0 245px;
-  width: 245px;
-  max-width: 245px;
+  -webkit-flex: 0 0 290px;
+  -ms-flex: 0 0 290px;
+  flex: 0 0 290px;
+  width: 290px;
+  max-width: 290px;
 }
 .conditionInput {
   margin-left: 5px;

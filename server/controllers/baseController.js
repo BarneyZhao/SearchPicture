@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const baseService = require('../services/baseService.js');
+const baseService = require('../services/baseService');
 
 router.get('/api/image', (req, res) => {
   baseService.getImage(req.query.f).then((data) => {
@@ -11,6 +11,15 @@ router.get('/api/image', (req, res) => {
     }
   }).catch(() => {
     res.status(404).end();
+  });
+});
+
+router.get('/api/search', (req, res) => {
+  baseService.search(req.query).then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    console.log(err);
+    res.json(err.message || err);
   });
 });
 

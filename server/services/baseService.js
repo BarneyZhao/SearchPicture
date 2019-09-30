@@ -1,4 +1,5 @@
 const fs = require('fs');
+const services = require(`${__dirname}/../../microServices/imageService.js`);
 
 exports.getImage = (fileName) => {
   return new Promise((resolve, reject) => {
@@ -12,3 +13,5 @@ exports.getImage = (fileName) => {
     });
   });
 };
+
+exports.search = services.search;

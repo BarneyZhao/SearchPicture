@@ -5,6 +5,7 @@
       :isLoading="isLoading"
       :canPlayOrExport="canPlayOrExport"
       @selectSearchFolder="selectSearchFolder"
+      @inputSearchFolder="inputSearchFolder"
       @search="search"
       @imagePlayerTrigger="imagePlayerTrigger"
       @toggleFullscreen="toggleFullscreen"
@@ -27,7 +28,7 @@
 </template>
 
 <script>
-import service from '@/services/homeService.js';
+import service from '@/services/homeService';
 import Search from '@/components/Search';
 import ImagePlayer from '@/components/ImagePlayer';
 import FileDisplay from '@/components/FileDisplay';
@@ -52,10 +53,14 @@ export default {
   },
   methods: {
     selectSearchFolder () {
+      if (!this.$IS_E()) return;
       service.selectFolder('open').then((data) => {
         this.searchFolder = '';
         if (data && data.length > 0) this.searchFolder = data[0];
       });
+    },
+    inputSearchFolder (path) {
+      this.searchFolder = path;
     },
     search (params) {
       this.isLoading = true;
@@ -84,9 +89,11 @@ export default {
       });
     },
     toggleFullscreen () {
+      if (!this.$IS_E()) return;
       service.toggleFullscreen();
     },
     exportTo () {
+      if (!this.$IS_E()) return;
       let conditionStr = this.nowConditions.w
         ? this.nowConditions.w + '-' + this.nowConditions.h
         : this.nowConditions.rw + '-' + this.nowConditions.rh;
@@ -113,6 +120,7 @@ export default {
       this.selectedIndex = index;
     },
     contextMenuClick (item) {
+      if (!this.$IS_E('slient')) return;
       service.showContextMenu(item);
     },
   },

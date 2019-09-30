@@ -66,14 +66,25 @@ Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$notify = Notification;
 
 Vue.prototype.$getImgPath = (n) => {
-  if (window.location.hostname === 'localhost') {
-    return '/api/image?f=' + n;
-  } else {
+  if (window.location.href.includes('file://')) {
     return n;
+  } else {
+    return '/api/image?f=' + n;
   }
 };
 
 Vue.prototype.$PLATFORM = process.platform;
+Vue.prototype.$IS_E = (mode) => {
+  const isE = !!window.require;
+  if (!isE && mode !== 'slient') {
+    Notification({
+      title: '提示',
+      message: '当前非Electron环境',
+      duration: 1500,
+    });
+  }
+  return isE;
+};
 
 new Vue({
   router,

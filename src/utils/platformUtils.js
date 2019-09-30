@@ -1,8 +1,12 @@
 /**
  * IPC: Inter-Process Communication
  */
+import axios from 'axios';
 import config from '~/config.json';
-const { ipcRenderer, remote, shell } = window.require('electron');
+let { ipcRenderer, remote, shell } = {};
+if (window.require) {
+  ({ ipcRenderer, remote, shell } = window.require('electron'));
+}
 
 const funcs = {
   req (name) {
@@ -13,7 +17,7 @@ const funcs = {
   },
 };
 
-const electronUtils = {
+const platformUtils = window.require ? {
   req ({ name, params }) {
     return new Promise((resolve) => {
       ipcRenderer.once(funcs.res(name), (evt, arg) => {
@@ -26,6 +30,14 @@ const electronUtils = {
   },
   remote,
   shell,
+} : {
+  req ({ name, params }) {
+    return axios({
+      method: 'get',
+      url: '/api/' + name,
+      params,
+    }).then(data => data.data);
+  },
 };
 
-export default electronUtils;
+export default platformUtils;

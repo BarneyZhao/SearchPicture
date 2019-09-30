@@ -1,4 +1,4 @@
-import eu from '@/utils/electronUtils.js';
+import eu from '@/utils/platformUtils';
 
 const service = {
   selectFolder (type, conditionStr) {
