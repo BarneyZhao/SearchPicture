@@ -4,7 +4,7 @@ const services = require('../microServices/imageService');
 
 (async function asyncFunction (path) {
   try {
-    const files = await services.getFiles(path, 'jpg,jpeg,png,gif');
+    const files = await services.getFiles(path);
     console.log('glob files count : ' + files.length);
     const rows = await pool.query('select path from pic_info');
     console.log('database record : ' + rows.length);

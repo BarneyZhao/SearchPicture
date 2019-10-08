@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     selectSearchFolder () {
-      if (!this.$IS_E()) return;
+      if (!this.$IS_E_NOTIFY()) return;
       service.selectFolder('open').then((data) => {
         this.searchFolder = '';
         if (data && data.length > 0) this.searchFolder = data[0];
@@ -74,11 +74,13 @@ export default {
           this.outputData = data.images.map((d) => {
             return { sn: this.$getImgPath(d.n), ...d };
           });
+          let msg = data.msg;
           if (this.outputData.length > 0) this.canPlayOrExport = true;
-          if (data.msg) {
+          else msg = data.msg || '查询结果为空';
+          if (msg) {
             this.$notify({
               title: '提示',
-              message: data.msg,
+              message: msg,
               duration: 1500,
             });
           }
@@ -89,11 +91,11 @@ export default {
       });
     },
     toggleFullscreen () {
-      if (!this.$IS_E()) return;
+      if (!this.$IS_E_NOTIFY()) return;
       service.toggleFullscreen();
     },
     exportTo () {
-      if (!this.$IS_E()) return;
+      if (!this.$IS_E_NOTIFY()) return;
       let conditionStr = this.nowConditions.w
         ? this.nowConditions.w + '-' + this.nowConditions.h
         : this.nowConditions.rw + '-' + this.nowConditions.rh;
@@ -120,7 +122,7 @@ export default {
       this.selectedIndex = index;
     },
     contextMenuClick (item) {
-      if (!this.$IS_E('slient')) return;
+      if (!this.$IS_E) return;
       service.showContextMenu(item);
     },
   },

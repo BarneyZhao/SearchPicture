@@ -396,6 +396,10 @@ body:not(input) {
   margin-left: 91.66667%;
 }
 
+.flex-1 {
+  flex: 1;
+}
+
 
 .line {
   border-bottom: 1px solid #f3f4f6;

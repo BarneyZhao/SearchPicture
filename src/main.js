@@ -74,16 +74,16 @@ Vue.prototype.$getImgPath = (n) => {
 };
 
 Vue.prototype.$PLATFORM = process.platform;
-Vue.prototype.$IS_E = (mode) => {
-  const isE = !!window.require;
-  if (!isE && mode !== 'slient') {
+Vue.prototype.$IS_E = Boolean(window.require);
+Vue.prototype.$IS_E_NOTIFY = () => {
+  if (!Vue.prototype.$IS_E) {
     Notification({
       title: '提示',
       message: '当前非Electron环境',
       duration: 1500,
     });
   }
-  return isE;
+  return Vue.prototype.$IS_E;
 };
 
 new Vue({

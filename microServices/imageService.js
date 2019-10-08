@@ -12,10 +12,10 @@ const ONE_THREAD_MAX = 50;
  * @param {String} fileType 'jpg,png[,xxx]'
  * @return {Array(String)} filesPath
  */
-const getFiles = (folderPath, fileType) => {
+const getFiles = (folderPath) => {
   return new Promise((resolve, reject) => {
     console.log('running glob...');
-    glob(`${folderPath}/**/*.{${fileType}}`, { nodir: true }, (err, filesPath) => {
+    glob(`${folderPath}/**/*.{jpg,jpeg,png,gif}`, { nodir: true }, (err, filesPath) => {
       if (!err) {
         resolve(filesPath);
       } else {
@@ -106,7 +106,7 @@ const writeCache = (folderPath, data) => {
 
 exports.search = (q) => {
   return Promise.all([
-    getFiles(q.searchFolder, 'jpg,png'),
+    getFiles(q.searchFolder),
     readCache(q.searchFolder)
   ]).then(([currentFilesPath, checkedImagesFromCache]) => {
     let returnImages = [];

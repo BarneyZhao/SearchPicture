@@ -15,7 +15,13 @@ router.get('/api/image', (req, res) => {
 });
 
 router.get('/api/search', (req, res) => {
-  baseService.search(req.query).then((data) => {
+  let promise = null;
+  console.log('');
+  console.log(`---conditions---:${new Date()}`);
+  console.log(req.query);
+  if (req.query.searchFolderType === 'db') promise = baseService.searchDb(req.query);
+  else promise = baseService.search(req.query);
+  promise.then((data) => {
     res.json(data);
   }).catch((err) => {
     console.log(err);

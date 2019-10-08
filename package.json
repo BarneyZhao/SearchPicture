@@ -6,6 +6,7 @@
   "main": "./app/main.js",
   "scripts": {
     "v": "vue-cli-service serve",
+    "server": "npx nodemon -w server -x 'cross-env NODE_ENV=dev node ./server/main.js'",
     "el": "npx nodemon -w app -x 'cross-env NODE_ENV=dev electron .'",
     "build-vue": "vue-cli-service build --no-clean",
     "build-el": "cross-env NODE_ENV=prod electron-builder",

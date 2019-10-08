@@ -41,17 +41,23 @@
     <div class="col options">
       <el-form label-width="100px">
         <el-form-item label="搜索文件夹">
-          <template v-if="isE">
+          <template v-if="$IS_E">
             <el-button @click="selectSearchFolder" size="small" onfocus="blur()">选择</el-button>
             <span>&nbsp;{{this.searchFolder}}</span>
           </template>
-          <el-input
-            v-else
-            v-model="searchFolderTemp"
-            @blur="folderTempInputBlur"
-            placeholder="文件夹路径"
-            clearable>
-          </el-input>
+          <div class="row align-items-center" v-else>
+            <el-radio v-model="form.searchFolderType" label="db">数据库</el-radio>
+            <el-radio v-model="form.searchFolderType" label="input">输入</el-radio>
+            <div class="flex-1">
+              <el-input
+                v-model="searchFolderTemp"
+                @blur="folderTempInputBlur"
+                placeholder="文件夹路径"
+                :disabled="form.searchFolderType === 'db'"
+                clearable>
+              </el-input>
+            </div>
+          </div>
         </el-form-item>
         <el-form-item label="">
           <el-button class="submitButton" @click="search" onfocus="blur()"
@@ -83,15 +89,14 @@ export default {
         h: '1080',
         rw: '16',
         rh: '9',
+        searchFolderType: '',
       },
       searchFolderTemp: '',
       outputData: null,
     };
   },
-  computed: {
-    isE () {
-      return this.$IS_E('slient');
-    },
+  mounted () {
+    if (!this.$IS_E) this.form.searchFolderType = 'db';
   },
   methods: {
     selectSearchFolder () {
@@ -101,10 +106,10 @@ export default {
       this.$emit('inputSearchFolder', this.searchFolderTemp);
     },
     search () {
-      if (!this.searchFolder) {
+      if (this.form.searchFolderType !== 'db' && !this.searchFolder) {
         this.$notify({
           title: '提示',
-          message: `请${this.isE ? '选择' : '输入'}要搜索的文件夹`,
+          message: `请${this.$IS_E ? '选择' : '输入'}要搜索的文件夹`,
           duration: 1500,
         });
         return;

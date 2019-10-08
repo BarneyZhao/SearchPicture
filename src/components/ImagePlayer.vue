@@ -156,7 +156,7 @@ export default {
 .playerController {
   z-index: 99;
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: black;
   padding: 12px;
   position: absolute;
   left: 50%;
@@ -178,7 +178,7 @@ export default {
 .playerSettings {
   z-index: 99;
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: black;
   padding: 12px;
   position: absolute;
   left: 50%;
@@ -211,7 +211,7 @@ export default {
 .playerController:hover,
 .playerController_hover,
 .playerSetting_show {
-  opacity: .8;
+  opacity: .5;
   pointer-events: initial;
 }
 </style>
