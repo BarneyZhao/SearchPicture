@@ -70,20 +70,22 @@ export default {
         searchFolder: this.searchFolder
       }, params);
       service.search(temp).then((data) => {
+        let msg = data.msg || data;
         if (data && Array.isArray(data.images)) {
           this.outputData = data.images.map((d) => {
             return { sn: this.$getImgPath(d.n), ...d };
           });
-          let msg = data.msg;
           if (this.outputData.length > 0) this.canPlayOrExport = true;
           else msg = data.msg || '查询结果为空';
-          if (msg) {
-            this.$notify({
-              title: '提示',
-              message: msg,
-              duration: 1500,
-            });
-          }
+        } else {
+          msg = msg || '未知错误';
+        }
+        if (msg !== 'success') {
+          this.$notify({
+            title: '提示',
+            message: msg,
+            duration: 1500,
+          });
         }
         this.isLoading = false;
       }).catch(err => {

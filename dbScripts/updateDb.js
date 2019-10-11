@@ -1,6 +1,7 @@
 
 const pool = require('../server/dbPool');
 const services = require('../microServices/imageService');
+const config = require('../config.json');
 
 (async function asyncFunction (path) {
   try {
@@ -33,4 +34,4 @@ const services = require('../microServices/imageService');
     // if (conn) conn.end();
     if (pool) pool.end();
   }
-})('/Users/zhaoxuanzi/pics');
+})(config.search_folder);

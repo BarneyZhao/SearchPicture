@@ -1,5 +1,8 @@
 <template>
   <div class="imagePlayer" v-show="imagePlay" @click="clickAct">
+    <div class="progress">
+      <div class="stroke" :style="{'transition-duration': `${progressTransTime}ms`, 'width': `${strokeWidth}%`}"></div>
+    </div>
     <img class="image" draggable="false"
       :style="{'transition': `opacity ${imageTransTime}ms`}"
       v-for="(image, index) in imageList"
@@ -43,7 +46,14 @@ export default {
       isShowControllerByClick: false,
       autoFadeTimer: null,
       isShowSetting: false,
+      strokeWidth: 0,
+      strokeTransTimeFlag: false,
     };
+  },
+  computed: {
+    progressTransTime () {
+      return this.strokeTransTimeFlag ? this.imageStayTime * 1000 + this.imageTransTime : 0;
+    },
   },
   methods: {
     clickAct () {
@@ -87,9 +97,13 @@ export default {
           nextIndex = index;
         }
       });
+      this.strokeWidth = 0;
+      this.strokeTransTimeFlag = false;
       setTimeout(() => {
         this.imageList[nowIndex].src = this.outputData[this.imagePlayIndex].sn;
         this.imageList[nextIndex].isShow = true;
+        this.strokeWidth = 100;
+        this.strokeTransTimeFlag = true;
       }, this.imageTransTime);
     },
     getIntervalTime () {
@@ -98,9 +112,6 @@ export default {
   },
   watch: {
     imagePlay () {
-      setTimeout(() => {
-        this.imageList[0].isShow = this.imagePlay;
-      }, 100);
       if (this.imagePlay) {
         this.imagePlayInterval = setInterval(
           this.intervalFun,
@@ -108,7 +119,17 @@ export default {
         );
       } else {
         clearInterval(this.imagePlayInterval);
+        this.strokeWidth = 0;
+        this.strokeTransTimeFlag = false;
       }
+      this.$nextTick(() => {
+        const activeIndexInImageList = (this.imagePlayIndex + 1) % 2;
+        this.imageList[activeIndexInImageList].isShow = this.imagePlay;
+        if (this.imagePlay) {
+          this.strokeWidth = 100;
+          this.strokeTransTimeFlag = true;
+        }
+      });
     },
     outputData () {
       this.imageList = [];
@@ -213,5 +234,23 @@ export default {
 .playerSetting_show {
   opacity: .5;
   pointer-events: initial;
+}
+
+.progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  line-height: 0;
+  z-index: 11;
+}
+.progress .stroke {
+  display: inline-block;
+  height: 2px;
+  background-color: #67C23A;
+  vertical-align: middle;
+  transition-timing-function: linear;
+  transition-property: width;
 }
 </style>

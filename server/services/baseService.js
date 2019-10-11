@@ -18,7 +18,7 @@ exports.getImage = (fileName) => {
 exports.search = services.search;
 
 exports.searchDb = async (q) => {
-  let msg = '';
+  let msg = 'success';
   let sql = `select path as n, width as w, height as h, aspect_ratio, like_num, dislike_num, key_word, create_time, update_time from pic_info`;
   const conditions = [];
   if (q.conditionType === 'pixel') {

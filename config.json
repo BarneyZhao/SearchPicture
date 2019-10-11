@@ -2,5 +2,12 @@
   "ipc_format": {
     "req": "ipc-{0}-req",
     "res": "ipc-{0}-res"
-  }
+  },
+  "search_folder": "/Users/zhaoxuanzi/pics",
+  "image_type": [
+    "jpg",
+    "jpeg",
+    "png",
+    "gif"
+  ]
 }
