@@ -4,6 +4,7 @@ const services = require('../microServices/imageService');
 const config = require('../config.json');
 
 (async function asyncFunction (path) {
+  const errList = [];
   try {
     const files = await services.getFiles(path);
     console.log('glob files count : ' + files.length);
@@ -23,15 +24,18 @@ const config = require('../config.json');
       ;`;
       // eslint-disable-next-line no-await-in-loop
       const res = await pool.query(sql).catch((err) => {
-        console.log(`${image.n} insert err:`);
-        console.log(err);
+        errList.push({
+          n: image.n,
+          err,
+        });
+        return `${image.n} insert err!`;
       });
       console.log(res);
     }
+    if (errList.length > 0) console.log(JSON.stringify(errList));
   } catch (err) {
     console.log(err);
   } finally {
-    // if (conn) conn.end();
     if (pool) pool.end();
   }
 })(config.search_folder);
