@@ -60,19 +60,53 @@
           </div>
         </el-form-item>
         <el-form-item label="">
-          <el-button class="submitButton" @click="search" onfocus="blur()"
-            :loading="isLoading">{{isLoading ? '运行中' : '开始'}}</el-button>
+          <el-button
+            class="submitButton"
+            @click="search"
+            onfocus="blur()"
+            :loading="isLoading"
+          >{{isLoading ? '运行中' : '开始'}}</el-button>
           &nbsp;
-          <el-button class="fullscreenButton" onfocus="blur()"
-            @click="toggleFullscreen">切换全屏</el-button>
+          <el-button
+            class="sqlButton"
+            @click="dialogSqlVisible = true"
+            onfocus="blur()"
+            :disabled="form.searchFolderType !== 'db'"
+          >自定义sql</el-button>
           &nbsp;
-          <el-button class="playButton" @click="imagePlayerTrigger" onfocus="blur()"
-            :disabled="!canPlayOrExport">播放图片</el-button>
+          <el-button
+            class="fullscreenButton"
+            onfocus="blur()"
+            @click="toggleFullscreen"
+          >切换全屏</el-button>
           &nbsp;
-          <el-button class="exportButton" @click="exportTo" onfocus="blur()"
-            :disabled="!canPlayOrExport">导出到文件夹</el-button>
+          <el-button
+            class="playButton"
+            @click="imagePlayerTrigger"
+            onfocus="blur()"
+            :disabled="!canPlayOrExport"
+          >播放图片</el-button>
+          &nbsp;
+          <el-button
+            class="exportButton"
+            @click="exportTo"
+            onfocus="blur()"
+            :disabled="!canPlayOrExport"
+          >导出到文件夹</el-button>
         </el-form-item>
       </el-form>
+      <el-dialog title="自定义查询" :visible.sync="dialogSqlVisible">
+        <el-input
+          v-model="sqlCondition"
+          placeholder="输入sql条件"
+          class=""
+          clearable
+        ></el-input>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogSqlVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogSqlVisible = false;searchBySql()">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -93,6 +127,8 @@ export default {
       },
       searchFolderTemp: '',
       outputData: null,
+      dialogSqlVisible: false,
+      sqlCondition: '',
     };
   },
   mounted () {
@@ -124,6 +160,9 @@ export default {
     },
     exportTo () {
       this.$emit('exportTo');
+    },
+    searchBySql () {
+      this.$emit('searchBySql', this.sqlCondition);
     },
   },
 };

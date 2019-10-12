@@ -2,26 +2,17 @@ import 'normalize.css';
 import '@/main.css';
 
 import {
-  Container,
-  Header,
-  Aside,
-  Main,
-  Footer,
   Input,
   Button,
   Form,
   FormItem,
   Icon,
-  Col,
-  Row,
-  Select,
-  Option,
-  Upload,
   Radio,
   Message,
   MessageBox,
   Notification,
   InputNumber,
+  Dialog,
 } from 'element-ui';
 
 import Vue from 'vue';
@@ -43,23 +34,14 @@ Vue.use(VueLazyload, {
   }
 });
 
-Vue.use(Container);
-Vue.use(Header);
-Vue.use(Aside);
-Vue.use(Main);
-Vue.use(Footer);
 Vue.use(Input);
 Vue.use(Button);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Icon);
-Vue.use(Col);
-Vue.use(Row);
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(Upload);
 Vue.use(Radio);
 Vue.use(InputNumber);
+Vue.use(Dialog);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;

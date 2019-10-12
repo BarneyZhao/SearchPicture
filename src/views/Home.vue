@@ -7,6 +7,7 @@
       @selectSearchFolder="selectSearchFolder"
       @inputSearchFolder="inputSearchFolder"
       @search="search"
+      @searchBySql="searchBySql"
       @imagePlayerTrigger="imagePlayerTrigger"
       @toggleFullscreen="toggleFullscreen"
       @exportTo="exportTo">
@@ -32,6 +33,29 @@ import service from '@/services/homeService';
 import Search from '@/components/Search';
 import ImagePlayer from '@/components/ImagePlayer';
 import FileDisplay from '@/components/FileDisplay';
+
+const handleRespose = (that) => {
+  return (data) => {
+    let msg = data.msg || data;
+    if (data && Array.isArray(data.images)) {
+      that.outputData = data.images.map((d) => {
+        return { sn: that.$getImgPath(d.n), ...d };
+      });
+      if (that.outputData.length > 0) that.canPlayOrExport = true;
+      else msg = data.msg + '查询结果为空';
+    } else {
+      msg = msg || '未知错误';
+    }
+    if (msg !== 'success') {
+      that.$notify({
+        title: '提示',
+        message: msg,
+        duration: 1500,
+      });
+    }
+    that.isLoading = false;
+  };
+};
 
 export default {
   name: 'Home',
@@ -69,26 +93,16 @@ export default {
       let temp = Object.assign({
         searchFolder: this.searchFolder
       }, params);
-      service.search(temp).then((data) => {
-        let msg = data.msg || data;
-        if (data && Array.isArray(data.images)) {
-          this.outputData = data.images.map((d) => {
-            return { sn: this.$getImgPath(d.n), ...d };
-          });
-          if (this.outputData.length > 0) this.canPlayOrExport = true;
-          else msg = data.msg || '查询结果为空';
-        } else {
-          msg = msg || '未知错误';
-        }
-        if (msg !== 'success') {
-          this.$notify({
-            title: '提示',
-            message: msg,
-            duration: 1500,
-          });
-        }
-        this.isLoading = false;
-      }).catch(err => {
+      const thenFunc = handleRespose(this);
+      service.search(temp).then(thenFunc).catch(err => {
+        console.log(err);
+      });
+    },
+    searchBySql (sql) {
+      this.isLoading = true;
+      this.selectedIndex = -1;
+      const thenFunc = handleRespose(this);
+      service.searchBySql({ sql }).then(thenFunc).catch(err => {
         console.log(err);
       });
     },

@@ -22,6 +22,12 @@ const service = {
       params,
     });
   },
+  searchBySql (params) {
+    return eu.req({
+      name: 'search/sql',
+      params,
+    });
+  },
   toggleFullscreen () {
     let cw = eu.remote.getCurrentWindow();
     let isFullScreen = cw.isFullScreen();

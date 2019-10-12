@@ -29,4 +29,16 @@ router.get('/api/search', (req, res) => {
   });
 });
 
+router.get('/api/search/sql', (req, res) => {
+  console.log('');
+  console.log(`---conditions---:${new Date()}`);
+  console.log(req.query);
+  baseService.searchDbByInputSql(req.query.sql).then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    console.log(err);
+    res.json(err.message || err);
+  });
+});
+
 module.exports = router;

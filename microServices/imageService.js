@@ -155,8 +155,9 @@ exports.search = (q) => {
         if (flag) filteredImages.push(image);
       });
     } else {
-      msg = '没有搜索条件最多显示100张';
-      filteredImages.push(...images.slice(0, 100));
+      // msg = '没有搜索条件最多显示100张';
+      // filteredImages.push(...images.slice(0, 100));
+      filteredImages = images;
     }
     // console.log('finish...');
     return {
