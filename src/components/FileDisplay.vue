@@ -5,7 +5,19 @@
       <el-radio v-model="displayType" label="list">列表</el-radio>
     </div>
     <div class="line"></div>
-    <div class="row" v-show="displayType === 'list'">
+    <div v-show="displayType === 'tile'" class="window mini_files" :class="{'windows_scrollbar': isWindows}">
+      <div class="row justify-content-between">
+        <div class="mini_file col" :class="{'selected': selectedIndex === index}"
+          v-for="(file, index) in outputData" :key="file.n" @click="fileClick(index)"
+          @contextmenu="fileClick(index, file)"
+        >
+          <img v-lazy="file.sn" draggable="false">
+          <!-- <div class="image-actions-bg"></div> -->
+        </div>
+        <div class="mini_file_placeholder col" v-for="i in placeholderCount" :key="'mfp'+i"></div>
+      </div>
+    </div>
+    <div v-show="displayType === 'list'" class="row">
       <div class="window files col" :class="{'windows_scrollbar': isWindows}" ref="scrollBody">
         <div class="file" :class="{'selected': selectedIndex === index}"
           v-for="(file, index) in outputData" :key="index" @click="fileClick(index)"
@@ -15,16 +27,6 @@
       </div>
       <div class="window image col">
         <ImagePreview v-if="outputData && selectedIndex !== -1" :imgObj="outputData[selectedIndex]"></ImagePreview>
-      </div>
-    </div>
-    <div class="window mini_files" :class="{'windows_scrollbar': isWindows}" v-show="displayType === 'tile'">
-      <div class="row justify-content-between">
-        <div class="mini_file col" :class="{'selected': selectedIndex === index}"
-          v-for="(file, index) in outputData" :key="file.n" @click="fileClick(index)"
-          @contextmenu="fileClick(index, file)">
-          <img v-lazy="file.sn" draggable="false">
-        </div>
-        <div class="mini_file_placeholder col" v-for="i in placeholderCount" :key="'mfp'+i"></div>
       </div>
     </div>
     <div class="image_preview" v-show="isShowPreview" v-if="previewImage">
@@ -211,5 +213,14 @@ export default {
   overflow: hidden;
   z-index: 9;
   color: white;
+}
+.image-actions-bg {
+  height: 30px;
+  background-color: black;
+  opacity: 0.4;
+  position: absolute;
+  left: 3px;
+  bottom: 3px;
+  width: calc(100% - 6px);
 }
 </style>
