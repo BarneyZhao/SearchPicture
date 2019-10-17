@@ -75,17 +75,16 @@ export default {
     };
   },
   mounted () {
-    const that = this;
-    this.gallery = new PhotoSwipe(this.$refs.pswp, PSUI, this.items, this.options);
-    this.gallery.listen('close', function () {
-      console.log('close');
-      that.$emit('close-gallery');
-    });
+
   },
   watch: {
     visible (newVal) {
       if (newVal) {
-        console.log('open');
+        const that = this;
+        this.gallery = new PhotoSwipe(this.$refs.pswp, PSUI, this.items, this.options);
+        this.gallery.listen('close', function () {
+          that.$emit('close-gallery');
+        });
         this.gallery.init();
       }
     },
