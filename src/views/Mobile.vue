@@ -39,6 +39,8 @@ export default {
         history: false,
         getThumbBoundsFn,
         showHideOpacity: true,
+        shareEl: false,
+        arrowEl: false,
       },
       psVisible: false,
     };
@@ -52,7 +54,7 @@ export default {
     }).then(data => {
       if (data && Array.isArray(data.images)) {
         this.items = data.images.map((d) => {
-          return { src: this.$getImgPath(d.n), ...d };
+          return { src: this.$getImgPath(d.n), title: d.n, ...d };
         });
       }
     });

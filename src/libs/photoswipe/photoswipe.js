@@ -393,7 +393,7 @@ var _isOpen,
 	_cancelAF,
 	_initalClassName,
 	_initalWindowScrollY,
-	// _oldIE,
+	_oldIE,
 	_currentWindowScrollY,
 	_features,
 	_windowVisibleSize = {},
@@ -824,7 +824,7 @@ var publicMethods = {
 		_requestAF = _features.raf;
 		_cancelAF = _features.caf;
 		_transformKey = _features.transform;
-		// _oldIE = _features.oldIE;
+		_oldIE = _features.oldIE;
 		
 		self.scrollWrap = framework.getChildByClass(template, 'pswp__scroll-wrap');
 		self.container = framework.getChildByClass(self.scrollWrap, 'pswp__container');
@@ -931,9 +931,9 @@ var publicMethods = {
 			_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, _itemHolders[i].el.style);
 		}
 
-		// if(!_oldIE) {
-		// 	framework.bind(self.scrollWrap, _downEvents, self); // no dragging for old IE
-		// }	
+		if(!_oldIE) {
+			framework.bind(self.scrollWrap, _downEvents, self); // no dragging for old IE
+		}	
 
 		_listen('initialZoomInEnd', function() {
 			self.setContent(_itemHolders[0], _currentItemIndex-1);
@@ -3288,10 +3288,10 @@ _registerModule('DesktopZoom', {
 
 		initDesktopZoom: function() {
 
-			// if(_oldIE) {
-			// 	// no zoom for old IE (<=8)
-			// 	return;
-			// }
+			if(_oldIE) {
+				// no zoom for old IE (<=8)
+				return;
+			}
 
 			if(_likelyTouchDevice) {
 				// if detected hardware touch support, we wait until mouse is used,
