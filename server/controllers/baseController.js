@@ -48,7 +48,8 @@ router.get('/api/search/random', (req, res) => {
   console.log('/api/search/random');
   console.log(`---conditions---:${new Date()}`);
   console.log(req.query);
-  baseService.searchDbByRandom(req.query.limit).then((data) => {
+  const limit = parseInt(req.query.limit, 10);
+  baseService.searchDbByRandom(limit).then((data) => {
     res.json(data);
   }).catch((err) => {
     console.log(err);
