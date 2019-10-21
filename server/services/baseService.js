@@ -69,7 +69,7 @@ exports.searchDbByRandom = async (limit = 2) => {
     }
     const end = max - limit;
     const idIndex = parseInt(Math.random() * (end - min + 1) + min, 10);
-    return baseSearch(`where ${idIndex} < id and id < ${idIndex + limit}`, conn);
+    return baseSearch(`where id > ${idIndex} limit ${limit}`, conn);
   } catch (err) {
     throw err;
   } finally {
