@@ -1,9 +1,9 @@
 import eu from '@/utils/platformUtils';
 
 const service = {
-  searchBySql (params) {
+  searchByRandom (params) {
     return eu.req({
-      name: 'search/sql',
+      name: 'search/random',
       params,
     });
   },

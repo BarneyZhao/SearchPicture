@@ -19,16 +19,16 @@ exports.getImage = (fileName) => {
 
 exports.search = services.search;
 
-const baseSearch = async (conditionSql) => {
+const baseSearch = async (conditionSql, connection) => {
   let msg = 'success';
   let sql = `select path as n, width as w, height as h, aspect_ratio, like_num, dislike_num, key_word, create_time, update_time from pic_info`;
   sql += ' ' + conditionSql + ';';
   let conn;
   try {
-    conn = await pool.getConnection();
+    conn = connection || await pool.getConnection();
     const rows = await conn.query(sql);
-    console.log(`query rows: ${rows.length}.`);
     console.log(`sql: ${sql}`);
+    console.log(`query rows: ${rows.length}.`);
     return {
       images: rows,
       msg,
@@ -57,3 +57,22 @@ exports.searchDb = (q) => {
 };
 
 exports.searchDbByInputSql = (inputSql) => baseSearch(inputSql);
+
+exports.searchDbByRandom = async (limit = 2) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query('select min(id) as min,max(id) as max from pic_info;');
+    const [{ min, max }] = rows;
+    if (max - min + 1 < limit) {
+      return baseSearch('', conn);
+    }
+    const end = max - limit;
+    const idIndex = parseInt(Math.random() * (end - min + 1) + min, 10);
+    return baseSearch(`where ${idIndex} < id and id < ${idIndex + limit}`, conn);
+  } catch (err) {
+    throw err;
+  } finally {
+    if (conn) conn.end();
+  }
+};

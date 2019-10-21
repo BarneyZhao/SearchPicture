@@ -5,6 +5,9 @@
             <img class="thumbnails" v-lazy="item.src" @click="changeGallery(true, index)">
         </div>
     </div>
+    <div class="refresh-link">
+      <a href="javascript:null;" @click="loadPics">刷新</a>
+    </div>
     <template v-if="items.length > 0">
       <PhotoSwipe
         :visible="psVisible"
@@ -19,6 +22,7 @@
 <script>
 import service from '../services/mobileService';
 import PhotoSwipe from '../components/PhotoSwipe';
+import * as softTime from '../utils/softTime';
 
 const getThumbBoundsFn = (index) => {
   const thumbnail = document.querySelectorAll('.thumbnails')[index];
@@ -46,20 +50,27 @@ export default {
     };
   },
   created () {
-    const min = 1;
-    const max = 7942;
-    const idIndex = parseInt(Math.random() * (max - min + 1) + min, 10);
-    service.searchBySql({
-      sql: `where ${idIndex} < id and id < ${idIndex + 30}`,
-    }).then(data => {
-      if (data && Array.isArray(data.images)) {
-        this.items = data.images.map((d) => {
-          return { src: this.$getImgPath(d.n), title: d.n, ...d };
-        });
-      }
-    });
+    this.loadPics();
   },
   methods: {
+    loadPics () {
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      });
+      softTime.setSoftApply(loading, 'close', 500);
+      service.searchByRandom({ limit: 40 }).then(data => {
+        if (data && Array.isArray(data.images)) {
+          this.items = data.images.map((d) => {
+            return { src: this.$getImgPath(d.n), title: d.n, ...d };
+          });
+        }
+      }).finally(() => {
+        loading.close();
+      });
+    },
     changeGallery (val, index = -1) {
       this.psOptions.index = index;
       this.$nextTick(() => {
@@ -70,21 +81,27 @@ export default {
 };
 </script>
 <style scoped>
-.mobile {
-    background-color: black;
-    min-height: 100vh;
-}
 .row {
-    padding: 1px;
+  padding: 1px;
 }
 .col-3 {
-    padding: 1px;
-    height: calc(25vw - 0.5px);
+  padding: 1px;
+  height: calc(25vw - 0.5px);
 }
 .thumbnails {
-    vertical-align: middle;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.refresh-link {
+  text-align: center;
+  padding: 10px 0;
+}
+.refresh-link a {
+  display: inline-block;
+  text-decoration: none;
+  color: #409EFF;
+  padding: 15px 20px;
 }
 </style>

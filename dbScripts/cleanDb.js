@@ -4,34 +4,28 @@ const services = require('../microServices/imageService');
 const config = require('../config.json');
 
 (async function asyncFunction (path) {
-  console.log(`update db in path: ${path}`);
+  console.log(`clean db in path: ${path}`);
   const errList = [];
   try {
     const files = await services.getFiles(path);
     console.log('glob files count : ' + files.length);
     const rows = await pool.query(`select path from pic_info where path like '${path}%';`);
     console.log('database record : ' + rows.length);
-    const needCheckImages = files.filter(file => !rows.find(row => row.path === file));
-    console.log('new image count : ' + needCheckImages.length);
-    const checkedImages = await services.checkImages(needCheckImages);
-    const nowTime = Date.now();
+    const needCleanImages = rows.filter(row => !files.find(file => file === row.path));
+    console.log('unexist image count : ' + needCleanImages.length);
+    // const checkedImages = await services.checkImages(needCheckImages);
     // eslint-disable-next-line no-restricted-syntax
-    for (const image of checkedImages) {
-      const sql = `
-        insert into pic_info
-        (path, width, height, aspect_ratio, like_num, dislike_num, create_time, update_time)
-        value
-        ('${image.n}',${image.w},${image.h},${(image.w / image.h).toFixed(2)},0,0,'${nowTime}','${nowTime}')
-      ;`;
+    for (const image of needCleanImages) {
+      const sql = `delete from pic_info where path = '${image.path}';`;
       // eslint-disable-next-line no-await-in-loop
       const res = await pool.query(sql).catch((err) => {
         errList.push({
-          n: image.n,
+          n: image.path,
           err,
         });
-        return `insert err!`;
+        return `delete err!`;
       });
-      console.log(res, `path: ${image.n}`);
+      console.log(res, `path: ${image.path}`);
     }
     if (errList.length > 0) console.log(JSON.stringify(errList));
   } catch (err) {

@@ -57,11 +57,11 @@
     ],
     "mac": {
       "target": "dmg",
-      "icon": "public/icon.icns"
+      "icon": "public/icon-512.icns"
     },
     "win": {
       "target": "zip",
-      "icon": "public/icon.ico"
+      "icon": "public/icon-256.ico"
     }
   },
   "eslintConfig": {

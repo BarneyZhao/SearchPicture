@@ -8,11 +8,12 @@ import {
   FormItem,
   Icon,
   Radio,
+  InputNumber,
+  Dialog,
   Message,
   MessageBox,
   Notification,
-  InputNumber,
-  Dialog,
+  Loading,
 } from 'element-ui';
 
 import Vue from 'vue';
@@ -47,6 +48,7 @@ Vue.use(Dialog);
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$notify = Notification;
+Vue.prototype.$loading = Loading.service;
 
 Vue.prototype.$getImgPath = (n) => {
   if (window.location.href.includes('file://')) {

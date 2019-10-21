@@ -17,6 +17,7 @@ router.get('/api/image', (req, res) => {
 router.get('/api/search', (req, res) => {
   let promise = null;
   console.log('');
+  console.log('/api/search');
   console.log(`---conditions---:${new Date()}`);
   console.log(req.query);
   if (req.query.searchFolderType === 'db') promise = baseService.searchDb(req.query);
@@ -31,6 +32,7 @@ router.get('/api/search', (req, res) => {
 
 router.get('/api/search/sql', (req, res) => {
   console.log('');
+  console.log('/api/search/sql');
   console.log(`---conditions---:${new Date()}`);
   console.log(req.query);
   baseService.searchDbByInputSql(req.query.sql).then((data) => {
@@ -41,4 +43,16 @@ router.get('/api/search/sql', (req, res) => {
   });
 });
 
+router.get('/api/search/random', (req, res) => {
+  console.log('');
+  console.log('/api/search/random');
+  console.log(`---conditions---:${new Date()}`);
+  console.log(req.query);
+  baseService.searchDbByRandom(req.query.limit).then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    console.log(err);
+    res.json(err.message || err);
+  });
+});
 module.exports = router;
