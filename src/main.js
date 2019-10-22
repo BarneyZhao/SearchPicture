@@ -21,17 +21,23 @@ import VueLazyload from 'vue-lazyload';
 import App from './App.vue';
 import router from './router';
 import base64 from './utils/base64';
+import * as softTime from './utils/softTime';
+
+const isTouch = 'ontouchend' in document;
 
 Vue.config.productionTip = false;
 
 Vue.use(VueLazyload, {
   preLoad: 1,
-  error: base64.imageError,
-  loading: base64.loading,
+  error: isTouch ? base64.mobileError : base64.error,
+  loading: isTouch ? base64.mobileLoading : base64.loading,
   attempt: 1,
   adapter: {
-    error (listender, Init) {
-      console.log('v-lazy img load error with url : ' + listender.src);
+    loaded ({ el }) {
+      softTime.addTimeQueue(() => { el.style.opacity = 1; }, 30);
+    },
+    error ({ src }) {
+      console.log('v-lazy img load error with url : ' + src);
     }
   }
 });
@@ -59,7 +65,7 @@ Vue.prototype.$getImgPath = (n) => {
 };
 
 Vue.prototype.$PLATFORM = process.platform;
-Vue.prototype.$IS_TOUCH = 'ontouchend' in document;
+Vue.prototype.$IS_TOUCH = isTouch;
 Vue.prototype.$IS_E = Boolean(window.require);
 Vue.prototype.$IS_E_NOTIFY = () => {
   if (!Vue.prototype.$IS_E) {

@@ -188,6 +188,8 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: scale-down;
+  transition: opacity 500ms;
+  opacity: .1;
 }
 .mini_file:hover:not(.selected) {
   background-color: #f0fcff;

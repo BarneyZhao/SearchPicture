@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 // middleware
 app.use(require('./middlewares/crossOrigin'));
+app.use(require('./middlewares/apiLog'));
 
 // routes setting
 app.use(require('./controllers/baseController'));

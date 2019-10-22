@@ -722,7 +722,10 @@ var PhotoSwipeUI_Default =
 		e = e || window.event;
 		var target = e.target || e.srcElement;
 
-		if(_blockControlsTap) {
+		var isCustomerIcon = target.className.includes('customer') ||
+			(e.parentNode && e.parentNode.className.includes('customer'));
+
+		if(_blockControlsTap || isCustomerIcon) {
 			return;
 		}
 

@@ -33,9 +33,9 @@ const platformUtils = window.require ? {
 } : {
   req ({ name, params }) {
     return axios({
-      method: 'get',
+      method: 'post',
       url: '/api/' + name,
-      params,
+      data: params,
     }).then(data => data.data);
   },
 };

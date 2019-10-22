@@ -7,6 +7,12 @@ const service = {
       params,
     });
   },
+  likeOrDislike (params) {
+    return eu.req({
+      name: 'pic/likeOrDislike',
+      params,
+    });
+  },
 };
 
 export default service;

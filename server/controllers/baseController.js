@@ -14,14 +14,10 @@ router.get('/api/image', (req, res) => {
   });
 });
 
-router.get('/api/search', (req, res) => {
+router.post('/api/search', (req, res) => {
   let promise = null;
-  console.log('');
-  console.log('/api/search');
-  console.log(`---conditions---:${new Date()}`);
-  console.log(req.query);
-  if (req.query.searchFolderType === 'db') promise = baseService.searchDb(req.query);
-  else promise = baseService.search(req.query);
+  if (req.body.searchFolderType === 'db') promise = baseService.searchDb(req.body);
+  else promise = baseService.search(req.body);
   promise.then((data) => {
     res.json(data);
   }).catch((err) => {
@@ -30,12 +26,8 @@ router.get('/api/search', (req, res) => {
   });
 });
 
-router.get('/api/search/sql', (req, res) => {
-  console.log('');
-  console.log('/api/search/sql');
-  console.log(`---conditions---:${new Date()}`);
-  console.log(req.query);
-  baseService.searchDbByInputSql(req.query.sql).then((data) => {
+router.post('/api/search/sql', (req, res) => {
+  baseService.searchDbByInputSql(req.body.sql).then((data) => {
     res.json(data);
   }).catch((err) => {
     console.log(err);
@@ -43,17 +35,22 @@ router.get('/api/search/sql', (req, res) => {
   });
 });
 
-router.get('/api/search/random', (req, res) => {
-  console.log('');
-  console.log('/api/search/random');
-  console.log(`---conditions---:${new Date()}`);
-  console.log(req.query);
-  const limit = parseInt(req.query.limit, 10);
-  baseService.searchDbByRandom(limit).then((data) => {
+router.post('/api/search/random', (req, res) => {
+  baseService.searchDbByRandom(req.body.limit).then((data) => {
     res.json(data);
   }).catch((err) => {
     console.log(err);
     res.json(err.message || err);
   });
 });
+
+router.post('/api/pic/likeOrDislike', (req, res) => {
+  baseService.likeOrDislike(req.body).then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    console.log(err);
+    res.json(err.message || err);
+  });
+});
+
 module.exports = router;

@@ -32,6 +32,13 @@
 
             <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
 
+            <button class="pswp__button pswp__button--customer" title="Like" @click="markPic(1)">
+              <i class="el-icon-circle-check customer"></i>
+            </button>
+            <button class="pswp__button pswp__button--customer" title="Dislike" @click="markPic(0)">
+              <i class="el-icon-circle-close customer"></i>
+            </button>
+
             <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
             <!-- element will get class pswp__preloader--active when preloader is running -->
             <div class="pswp__preloader">
@@ -74,9 +81,6 @@ export default {
       gallery: null,
     };
   },
-  mounted () {
-
-  },
   watch: {
     visible (newVal) {
       if (newVal) {
@@ -89,7 +93,16 @@ export default {
       }
     },
   },
+  methods: {
+    markPic (flag) {
+      this.$emit('mark-pic', this.gallery.currItem.n, flag);
+    },
+  },
 };
 </script>
 <style>
+.pswp__button--customer {
+  background: none!important;
+  color: white;
+}
 </style>
