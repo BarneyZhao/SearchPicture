@@ -8,7 +8,9 @@
     <div v-show="displayType === 'tile'" class="window mini_files" :class="{'windows_scrollbar': isWindows}">
       <div class="row justify-content-between">
         <div class="mini_file col" :class="{'selected': selectedIndex === index}"
-          v-for="(file, index) in outputData" :key="file.n" @click="fileClick(index)"
+          v-for="(file, index) in outputData" :key="file.n"
+          @click="fileClick(index)"
+          @dblclick="togglePreview"
           @contextmenu="fileClick(index, file)"
         >
           <img v-lazy="file.sn" draggable="false">
@@ -20,8 +22,11 @@
     <div v-show="displayType === 'list'" class="row">
       <div class="window files col" :class="{'windows_scrollbar': isWindows}" ref="scrollBody">
         <div class="file" :class="{'selected': selectedIndex === index}"
-          v-for="(file, index) in outputData" :key="index" @click="fileClick(index)"
-          @contextmenu="fileClick(index, file)">
+          v-for="(file, index) in outputData" :key="index"
+          @click="fileClick(index)"
+          @dblclick="togglePreview"
+          @contextmenu="fileClick(index, file)"
+        >
           {{getFilePath(file.n)}}
         </div>
       </div>
@@ -29,8 +34,14 @@
         <ImagePreview v-if="outputData && selectedIndex !== -1" :imgObj="outputData[selectedIndex]"></ImagePreview>
       </div>
     </div>
-    <div class="image_preview" v-show="isShowPreview" v-if="previewImage">
-      <ImagePreview :imgObj="previewImage" @imgClick="closePreview"></ImagePreview>
+    <!-- <div class="image_preview" v-show="isShowPreview" v-if="previewImage">
+      <ImagePreview :imgObj="previewImage" @imgClick="togglePreview"></ImagePreview>
+    </div> -->
+    <div class="el-previewer">
+      <el-image
+        ref="elpreviewer"
+        :preview-src-list="[previewImage && previewImage.sn]"
+      ></el-image>
     </div>
   </div>
 </template>
@@ -38,6 +49,8 @@
 <script>
 // import _ from 'lodash';
 import ImagePreview from '@/components/ImagePreview';
+import * as softTime from '../utils/softTime';
+
 export default {
   name: 'FileDisplay',
   components: {
@@ -54,24 +67,22 @@ export default {
     };
   },
   mounted () {
+    this.$Lazyload.$on('loaded', ({ el }) => {
+      softTime.addTimeQueue(() => { el.style.opacity = 1; }, 1);
+    });
     let vm = this;
     document.addEventListener('keydown', (e) => {
       // console.log(e.keyCode);
       switch (e.keyCode) {
         case 32: // 空格键预览
           if (vm.selectedIndex > -1) {
-            vm.isShowPreview = !vm.isShowPreview;
-            if (vm.isShowPreview) {
-              vm.previewImage = vm.outputData[vm.selectedIndex];
-            } else {
-              vm.previewImage = null;
-            }
+            vm.togglePreview();
             e.preventDefault();
             e.stopPropagation();
           }
           break;
         case 27: // esc键退出预览
-          if (vm.isShowPreview) vm.closePreview();
+          if (vm.isShowPreview) vm.togglePreview();
           break;
       }
       // let dir;
@@ -109,9 +120,22 @@ export default {
     getFileName (name) {
       return name.slice(name.lastIndexOf('/') + 1);
     },
-    closePreview () {
-      this.isShowPreview = false;
-      this.previewImage = null;
+    togglePreview () {
+      // this.isShowPreview = !this.isShowPreview;
+      // if (this.isShowPreview) {
+      //   this.previewImage = this.outputData[this.selectedIndex];
+      // } else {
+      //   this.previewImage = null;
+      // }
+      if (!this.$refs.elpreviewer.showViewer) {
+        this.previewImage = this.outputData[this.selectedIndex];
+        this.$nextTick(() => {
+          this.$refs.elpreviewer.clickHandler();
+        });
+      } else {
+        this.$refs.elpreviewer.closeViewer();
+        this.previewImage = null;
+      }
     },
   },
   computed: {
@@ -215,6 +239,11 @@ export default {
   overflow: hidden;
   z-index: 9;
   color: white;
+}
+.el-previewer {
+  position: absolute;
+  bottom: 0;
+  left: -100%;
 }
 .image-actions-bg {
   height: 30px;

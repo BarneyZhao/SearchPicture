@@ -10,6 +10,7 @@ import {
   Radio,
   InputNumber,
   Dialog,
+  Image,
   Message,
   MessageBox,
   Notification,
@@ -21,7 +22,6 @@ import VueLazyload from 'vue-lazyload';
 import App from './App.vue';
 import router from './router';
 import base64 from './utils/base64';
-import * as softTime from './utils/softTime';
 
 const isTouch = 'ontouchend' in document;
 
@@ -33,9 +33,6 @@ Vue.use(VueLazyload, {
   loading: isTouch ? base64.mobileLoading : base64.loading,
   attempt: 1,
   adapter: {
-    loaded ({ el }) {
-      softTime.addTimeQueue(() => { el.style.opacity = 1; }, 30);
-    },
     error ({ src }) {
       console.log('v-lazy img load error with url : ' + src);
     }
@@ -50,6 +47,7 @@ Vue.use(Icon);
 Vue.use(Radio);
 Vue.use(InputNumber);
 Vue.use(Dialog);
+Vue.use(Image);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;

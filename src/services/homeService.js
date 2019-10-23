@@ -28,6 +28,12 @@ const service = {
       params,
     });
   },
+  searchByRandom (params) {
+    return eu.req({
+      name: 'search/random',
+      params,
+    });
+  },
   toggleFullscreen () {
     let cw = eu.remote.getCurrentWindow();
     let isFullScreen = cw.isFullScreen();

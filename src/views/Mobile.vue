@@ -78,6 +78,11 @@ export default {
     },
   },
   created () {
+    let that = this;
+    this.$Lazyload.$on('loaded', ({ el }) => {
+      const time = that.gridMode === 4 ? 10 : 30;
+      softTime.addTimeQueue(() => { el.style.opacity = 1; }, time);
+    });
     this.loadPics();
   },
   methods: {

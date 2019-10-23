@@ -8,6 +8,7 @@
       @inputSearchFolder="inputSearchFolder"
       @search="search"
       @searchBySql="searchBySql"
+      @searchByLimit="searchByLimit"
       @imagePlayerTrigger="imagePlayerTrigger"
       @toggleFullscreen="toggleFullscreen"
       @exportTo="exportTo">
@@ -103,6 +104,14 @@ export default {
       this.selectedIndex = -1;
       const thenFunc = handleRespose(this);
       service.searchBySql({ sql }).then(thenFunc).catch(err => {
+        console.log(err);
+      });
+    },
+    searchByLimit (limit) {
+      this.isLoading = true;
+      this.selectedIndex = -1;
+      const thenFunc = handleRespose(this);
+      service.searchByRandom({ limit }).then(thenFunc).catch(err => {
         console.log(err);
       });
     },

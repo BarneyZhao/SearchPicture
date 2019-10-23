@@ -96,15 +96,30 @@
         </el-form-item>
       </el-form>
       <el-dialog title="自定义查询" :visible.sync="dialogSqlVisible">
-        <el-input
-          v-model="sqlCondition"
-          placeholder="输入sql条件"
-          class=""
-          clearable
-        ></el-input>
+        <div class="row align-items-center">
+          <el-radio v-model="customerQuery" label="1">输入</el-radio>
+          <el-input
+            v-model="sqlCondition"
+            placeholder="输入sql条件"
+            class="flex-1"
+            :disabled="customerQuery === '2'"
+            clearable
+          ></el-input>
+        </div>
+        <br>
+        <div class="row align-items-center">
+          <el-radio v-model="customerQuery" label="2">随机</el-radio>
+          <el-input
+            v-model.number="sqlLimit"
+            placeholder="输入随机数量"
+            class="flex-1"
+            :disabled="customerQuery === '1'"
+            clearable
+          ></el-input>
+        </div>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogSqlVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogSqlVisible = false;searchBySql()">确 定</el-button>
+          <el-button type="primary" @click="dialogSqlVisible = false;customerSearch()">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -128,7 +143,9 @@ export default {
       searchFolderTemp: '',
       outputData: null,
       dialogSqlVisible: false,
+      customerQuery: '1',
       sqlCondition: '',
+      sqlLimit: 40,
     };
   },
   mounted () {
@@ -161,8 +178,9 @@ export default {
     exportTo () {
       this.$emit('exportTo');
     },
-    searchBySql () {
-      this.$emit('searchBySql', this.sqlCondition);
+    customerSearch () {
+      if (this.customerQuery === '1') this.$emit('searchBySql', this.sqlCondition);
+      else this.$emit('searchByLimit', this.sqlLimit);
     },
   },
 };
