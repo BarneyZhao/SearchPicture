@@ -38,6 +38,7 @@
 import service from '../services/mobileService';
 import PhotoSwipe from '../components/PhotoSwipe';
 import * as softTime from '../utils/softTime';
+import storage from '../utils/storage';
 
 const getThumbBoundsFn = (index) => {
   const thumbnail = document.querySelectorAll('.thumbnails')[index];
@@ -51,8 +52,8 @@ export default {
   components: { PhotoSwipe },
   data () {
     return {
-      gridMode: parseInt(window.localStorage.getItem('gridMode') || 4),
-      items: [],
+      gridMode: storage.local.get('gridMode') || 4,
+      items: storage.local.get('outputData') || [],
       clickImgIndex: -1,
       psOptions: {
         index: 0,
@@ -100,13 +101,14 @@ export default {
           this.items = data.images.map((d) => {
             return { src: this.$getImgPath(d.n), title: d.n, ...d };
           });
+          storage.local.set('outputData', this.items);
         }
       }).finally(() => {
         loading.close();
       });
     },
     picGrid (mode) {
-      window.localStorage.setItem('gridMode', mode);
+      storage.local.set('gridMode', mode);
       this.gridMode = mode;
     },
     changeGallery (val, index = -1) {

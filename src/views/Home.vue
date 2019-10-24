@@ -34,6 +34,7 @@ import service from '@/services/homeService';
 import Search from '@/components/Search';
 import ImagePlayer from '@/components/ImagePlayer';
 import FileDisplay from '@/components/FileDisplay';
+import storage from '../utils/storage';
 
 const handleRespose = (that) => {
   return (data) => {
@@ -42,6 +43,7 @@ const handleRespose = (that) => {
       that.outputData = data.images.map((d) => {
         return { sn: that.$getImgPath(d.n), ...d };
       });
+      storage.local.set('outputData', that.outputData);
       if (that.outputData.length > 0) that.canPlayOrExport = true;
       else msg = data.msg + '查询结果为空';
     } else {
@@ -68,7 +70,7 @@ export default {
   data () {
     return {
       searchFolder: '',
-      outputData: [],
+      outputData: storage.local.get('outputData') || [],
       selectedIndex: -1,
       isLoading: false,
       canPlayOrExport: false,

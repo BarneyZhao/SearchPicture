@@ -127,25 +127,30 @@
 </template>
 
 <script>
+import storage from '../utils/storage';
+
 export default {
   name: 'Search',
   props: ['searchFolder', 'isLoading', 'canPlayOrExport'],
   data () {
+    const {
+      conditionType,
+      w, h, rw, rh,
+    } = storage.local.get('search_form') || {};
     return {
       form: {
-        conditionType: 'pixel',
-        w: '1920',
-        h: '1080',
-        rw: '16',
-        rh: '9',
+        conditionType: conditionType || 'pixel',
+        w,
+        h,
+        rw,
+        rh,
         searchFolderType: '',
       },
-      searchFolderTemp: '',
-      outputData: null,
+      searchFolderTemp: storage.local.get('searchFolderTemp') || '',
+      customerQuery: storage.local.get('customerQuery') || '1',
+      sqlCondition: storage.local.get('sqlCondition') || '',
+      sqlLimit: storage.local.get('sqlLimit') || 40,
       dialogSqlVisible: false,
-      customerQuery: '1',
-      sqlCondition: '',
-      sqlLimit: 40,
     };
   },
   mounted () {
@@ -167,6 +172,8 @@ export default {
         });
         return;
       }
+      storage.local.set('search_form', this.form);
+      storage.local.set('searchFolderTemp', this.searchFolderTemp);
       this.$emit('search', this.form);
     },
     imagePlayerTrigger () {
@@ -179,8 +186,14 @@ export default {
       this.$emit('exportTo');
     },
     customerSearch () {
-      if (this.customerQuery === '1') this.$emit('searchBySql', this.sqlCondition);
-      else this.$emit('searchByLimit', this.sqlLimit);
+      storage.local.set('customerQuery', this.customerQuery);
+      if (this.customerQuery === '1') {
+        storage.local.set('sqlCondition', this.sqlCondition);
+        this.$emit('searchBySql', this.sqlCondition);
+      } else {
+        storage.local.set('sqlLimit', this.sqlLimit);
+        this.$emit('searchByLimit', this.sqlLimit);
+      }
     },
   },
 };

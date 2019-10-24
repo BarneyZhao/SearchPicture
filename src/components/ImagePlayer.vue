@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import storage from '../utils/storage';
+
 export default {
   name: 'ImagePlayer',
   props: ['imagePlay', 'outputData'],
@@ -41,7 +43,7 @@ export default {
       imageList: [],
       imagePlayIndex: 1,
       imagePlayInterval: null,
-      imageStayTime: parseInt(window.localStorage.getItem('image_stay') || 3),
+      imageStayTime: storage.local.get('image_stay') || 3,
       imageTransTime: 500,
       isShowControllerByClick: false,
       autoFadeTimer: null,
@@ -72,7 +74,7 @@ export default {
     },
     settingConfirm (ans) {
       if (ans) {
-        window.localStorage.setItem('image_stay', this.imageStayTime);
+        storage.local.set('image_stay', this.imageStayTime);
         clearInterval(this.imagePlayInterval);
         this.imagePlayInterval = setInterval(
           this.intervalFun,

@@ -3,9 +3,10 @@
     <div class="displaySetting">
       <el-radio v-model="displayType" label="tile">平铺</el-radio>
       <el-radio v-model="displayType" label="list">列表</el-radio>
+      <el-radio v-model="displayType" label="waterfall">瀑布流</el-radio>
     </div>
     <div class="line"></div>
-    <div v-show="displayType === 'tile'" class="window mini_files" :class="{'windows_scrollbar': isWindows}">
+    <div v-show="displayType === 'tile'" class="window of-y_auto" :class="{'windows_scrollbar': isWindows}">
       <div class="row justify-content-between">
         <div class="mini_file col" :class="{'selected': selectedIndex === index}"
           v-for="(file, index) in outputData" :key="file.n"
@@ -34,6 +35,26 @@
         <ImagePreview v-if="outputData && selectedIndex !== -1" :imgObj="outputData[selectedIndex]"></ImagePreview>
       </div>
     </div>
+    <div v-show="displayType === 'waterfall'" class="window of-y_auto">
+      <Waterfall
+        ref="waterfallCom"
+        :line-gap="200"
+        :min-line-gap="200"
+        :max-line-gap="300"
+      >
+        <WaterfallSlot
+          class="waterfall-box"
+          move-class="waterfall_move-class"
+          v-for="(file, index) in outputData" :key="file.n"
+          :order="index"
+          :width="file.w"
+          :height="file.h"
+        >
+          <img v-lazy="file.sn" class="waterfall-img" draggable="false">
+        </WaterfallSlot>
+      </Waterfall>
+    </div>
+    <!-- 原来的preview -->
     <!-- <div class="image_preview" v-show="isShowPreview" v-if="previewImage">
       <ImagePreview :imgObj="previewImage" @imgClick="togglePreview"></ImagePreview>
     </div> -->
@@ -48,18 +69,22 @@
 
 <script>
 // import _ from 'lodash';
+import { Waterfall, WaterfallSlot } from 'vue-waterfall';
 import ImagePreview from '@/components/ImagePreview';
 import * as softTime from '../utils/softTime';
+import storage from '../utils/storage';
 
 export default {
   name: 'FileDisplay',
   components: {
+    Waterfall,
+    WaterfallSlot,
     ImagePreview,
   },
   props: ['searchFolder', 'outputData', 'selectedIndex'],
   data () {
     return {
-      displayType: 'tile',
+      displayType: storage.local.get('displayType') || 'waterfall',
       scrollVal: 0,
       placeholderCount: 20,
       isShowPreview: false,
@@ -121,6 +146,7 @@ export default {
       return name.slice(name.lastIndexOf('/') + 1);
     },
     togglePreview () {
+      // 原来的preview
       // this.isShowPreview = !this.isShowPreview;
       // if (this.isShowPreview) {
       //   this.previewImage = this.outputData[this.selectedIndex];
@@ -141,6 +167,14 @@ export default {
   computed: {
     isWindows () {
       return this.$PLATFORM === 'win32';
+    },
+  },
+  watch: {
+    displayType () {
+      storage.local.set('displayType', this.displayType);
+      if (this.displayType === 'waterfall') {
+        this.$refs.waterfallCom.reflowHandler();
+      }
     },
   },
 };
@@ -194,7 +228,7 @@ export default {
   border-left: 1px solid #f0f0f0;
 }
 
-.mini_files {
+.of-y_auto {
   overflow-y: auto;
 }
 .mini_file {
@@ -228,6 +262,19 @@ export default {
   flex: 0 0 150px;
   width: 150px;
   max-width: 150px;
+}
+.waterfall_move-class {
+  transition: transform .5s cubic-bezier(.55,0,.1,1);
+}
+.waterfall-box {
+  padding: 1px;
+}
+.waterfall-img {
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  transition: opacity 500ms;
+  opacity: .1;
 }
 .image_preview {
   position: fixed;
