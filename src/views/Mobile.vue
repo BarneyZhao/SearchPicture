@@ -40,6 +40,7 @@ import PhotoSwipe from '../components/PhotoSwipe';
 import * as softTime from '../utils/softTime';
 import storage from '../utils/storage';
 
+const storageData = storage.local.get('outputData') || [];
 const getThumbBoundsFn = (index) => {
   const thumbnail = document.querySelectorAll('.thumbnails')[index];
   const pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
@@ -53,7 +54,7 @@ export default {
   data () {
     return {
       gridMode: storage.local.get('gridMode') || 4,
-      items: storage.local.get('outputData') || [],
+      items: [],
       clickImgIndex: -1,
       psOptions: {
         index: 0,
@@ -84,7 +85,13 @@ export default {
       const time = that.gridMode === 4 ? 10 : 30;
       softTime.addTimeQueue(() => { el.style.opacity = 1; }, time);
     });
-    this.loadPics();
+    if (storageData.length === 0) {
+      this.loadPics();
+    } else {
+      this.items = storageData.map((d) => {
+        return { src: this.$getImgPath(d.n), title: d.n, ...d };
+      });
+    }
   },
   methods: {
     loadPics () {
@@ -98,10 +105,10 @@ export default {
       softTime.setSoftApply(loading, 'close', 500);
       service.searchByRandom({ limit: 40 }).then(data => {
         if (data && Array.isArray(data.images)) {
+          storage.local.set('outputData', data.images);
           this.items = data.images.map((d) => {
             return { src: this.$getImgPath(d.n), title: d.n, ...d };
           });
-          storage.local.set('outputData', this.items);
         }
       }).finally(() => {
         loading.close();

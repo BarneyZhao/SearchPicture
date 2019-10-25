@@ -13,9 +13,16 @@
           @click="fileClick(index)"
           @dblclick="togglePreview"
           @contextmenu="fileClick(index, file)"
+          @mouseenter="toggleImageActionBar(index, true)"
+          @mouseleave="toggleImageActionBar(index, false)"
         >
-          <img v-lazy="file.sn" draggable="false">
-          <!-- <div class="image-actions-bg"></div> -->
+          <img v-lazy="file.src" class="tile-img" draggable="false">
+          <ImageAction
+            v-show="file.showActionBar"
+            :height="30"
+            :left="0"
+            :bottom="0"
+          ></ImageAction>
         </div>
         <div class="mini_file_placeholder col" v-for="i in placeholderCount" :key="'mfp'+i"></div>
       </div>
@@ -50,7 +57,7 @@
           :width="file.w"
           :height="file.h"
         >
-          <img v-lazy="file.sn" class="waterfall-img" draggable="false">
+          <img v-lazy="file.src" @click="togglePreview(index)" class="waterfall-img" draggable="false">
         </WaterfallSlot>
       </Waterfall>
     </div>
@@ -61,7 +68,7 @@
     <div class="el-previewer">
       <el-image
         ref="elpreviewer"
-        :preview-src-list="[previewImage && previewImage.sn]"
+        :preview-src-list="[previewImage && previewImage.src]"
       ></el-image>
     </div>
   </div>
@@ -71,6 +78,7 @@
 // import _ from 'lodash';
 import { Waterfall, WaterfallSlot } from 'vue-waterfall';
 import ImagePreview from '@/components/ImagePreview';
+import ImageAction from '@/components/ImageAction';
 import * as softTime from '../utils/softTime';
 import storage from '../utils/storage';
 
@@ -80,6 +88,7 @@ export default {
     Waterfall,
     WaterfallSlot,
     ImagePreview,
+    ImageAction,
   },
   props: ['searchFolder', 'outputData', 'selectedIndex'],
   data () {
@@ -145,7 +154,7 @@ export default {
     getFileName (name) {
       return name.slice(name.lastIndexOf('/') + 1);
     },
-    togglePreview () {
+    togglePreview (index) {
       // 原来的preview
       // this.isShowPreview = !this.isShowPreview;
       // if (this.isShowPreview) {
@@ -153,8 +162,13 @@ export default {
       // } else {
       //   this.previewImage = null;
       // }
+      let sIndex = this.selectedIndex;
+      if (index > -1) { // 兼容瀑布流模式下单击事件触发此方法
+        sIndex = index;
+        this.fileClick(index);
+      }
       if (!this.$refs.elpreviewer.showViewer) {
-        this.previewImage = this.outputData[this.selectedIndex];
+        this.previewImage = this.outputData[sIndex];
         this.$nextTick(() => {
           this.$refs.elpreviewer.clickHandler();
         });
@@ -162,6 +176,9 @@ export default {
         this.$refs.elpreviewer.closeViewer();
         this.previewImage = null;
       }
+    },
+    toggleImageActionBar (index, flag) {
+      this.$emit('toggleActBar', index, flag);
     },
   },
   computed: {
@@ -241,7 +258,7 @@ export default {
   width: 150px;
   border-radius: 2px;
 }
-.mini_file img {
+.mini_file .tile-img {
   vertical-align: middle;
   width: 100%;
   height: 100%;
@@ -291,14 +308,5 @@ export default {
   position: absolute;
   bottom: 0;
   left: -100%;
-}
-.image-actions-bg {
-  height: 30px;
-  background-color: black;
-  opacity: 0.4;
-  position: absolute;
-  left: 3px;
-  bottom: 3px;
-  width: calc(100% - 6px);
 }
 </style>

@@ -11,7 +11,8 @@
       @searchByLimit="searchByLimit"
       @imagePlayerTrigger="imagePlayerTrigger"
       @toggleFullscreen="toggleFullscreen"
-      @exportTo="exportTo">
+      @exportTo="exportTo"
+    >
     </Search>
     <div class="line"></div>
     <FileDisplay
@@ -19,12 +20,15 @@
       :outputData="outputData"
       :selectedIndex="selectedIndex"
       @fileClick="fileClick"
-      @contextMenuClick="contextMenuClick">
+      @contextMenuClick="contextMenuClick"
+      @toggleActBar="toggleActBar"
+    >
     </FileDisplay>
     <ImagePlayer
       :imagePlay="imagePlay"
       :outputData="outputData"
-      @imagePlayerTrigger="imagePlayerTrigger">
+      @imagePlayerTrigger="imagePlayerTrigger"
+    >
     </ImagePlayer>
   </div>
 </template>
@@ -36,14 +40,15 @@ import ImagePlayer from '@/components/ImagePlayer';
 import FileDisplay from '@/components/FileDisplay';
 import storage from '../utils/storage';
 
+const storageData = storage.local.get('outputData') || [];
 const handleRespose = (that) => {
   return (data) => {
     let msg = data.msg || data;
     if (data && Array.isArray(data.images)) {
+      storage.local.set('outputData', data.images);
       that.outputData = data.images.map((d) => {
-        return { sn: that.$getImgPath(d.n), ...d };
+        return { src: that.$getImgPath(d.n), showActionBar: false, ...d };
       });
-      storage.local.set('outputData', that.outputData);
       if (that.outputData.length > 0) that.canPlayOrExport = true;
       else msg = data.msg + '查询结果为空';
     } else {
@@ -70,13 +75,20 @@ export default {
   data () {
     return {
       searchFolder: '',
-      outputData: storage.local.get('outputData') || [],
+      outputData: [],
       selectedIndex: -1,
       isLoading: false,
       canPlayOrExport: false,
       imagePlay: false,
       nowConditions: {},
     };
+  },
+  created () {
+    if (storageData.length !== 0) {
+      this.outputData = storageData.map((d) => {
+        return { src: this.$getImgPath(d.n), ...d };
+      });
+    }
   },
   methods: {
     selectSearchFolder () {
@@ -151,6 +163,11 @@ export default {
     contextMenuClick (item) {
       if (!this.$IS_E) return;
       service.showContextMenu(item);
+    },
+    toggleActBar (index, flag) {
+      const newObj = this.outputData[index];
+      newObj.showActionBar = flag;
+      this.outputData.splice(index, 1, newObj);
     },
   },
 };

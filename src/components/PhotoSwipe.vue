@@ -33,10 +33,12 @@
             <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
 
             <button class="pswp__button pswp__button--customer" title="Like" @click="markPic(1)">
-              <i class="el-icon-circle-check customer"></i>
+              <!-- <i class="el-icon-circle-check customer"></i> -->
+              <img src="../assets/thumb-up-line.svg" class="customer">
             </button>
             <button class="pswp__button pswp__button--customer" title="Dislike" @click="markPic(0)">
-              <i class="el-icon-circle-close customer"></i>
+              <!-- <i class="el-icon-circle-close customer"></i> -->
+              <img src="../assets/thumb-down-line.svg" class="customer">
             </button>
 
             <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
@@ -104,5 +106,9 @@ export default {
 .pswp__button--customer {
   background: none!important;
   color: white;
+}
+.pswp__button--customer img {
+  width: 16px;
+  height: 16px;
 }
 </style>

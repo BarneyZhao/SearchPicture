@@ -1,7 +1,7 @@
 <template>
   <div class="row preview">
     <div class="image_pic col" @click="imgClick">
-      <img :src="imgObj.sn" draggable="false">
+      <img :src="imgObj.src" draggable="false">
     </div>
     <div class="image_desc col">
       <div>{{getFileName(imgObj.n)}}</div>

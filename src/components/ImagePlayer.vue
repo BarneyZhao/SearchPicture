@@ -102,7 +102,7 @@ export default {
       this.strokeWidth = 0;
       this.strokeTransTimeFlag = false;
       setTimeout(() => {
-        this.imageList[nowIndex].src = this.outputData[this.imagePlayIndex].sn;
+        this.imageList[nowIndex].src = this.outputData[this.imagePlayIndex].src;
         this.imageList[nextIndex].isShow = true;
         this.strokeWidth = 100;
         this.strokeTransTimeFlag = true;
@@ -140,7 +140,7 @@ export default {
           if (index < 2) {
             this.imageList.push({
               isShow: false,
-              src: image.sn,
+              src: image.src,
             });
           }
         });
