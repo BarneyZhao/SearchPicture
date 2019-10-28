@@ -67,9 +67,12 @@ exports.searchDbByRandom = async (limit = 2) => {
     if (max - min + 1 < limit) {
       return baseSearch('', conn);
     }
-    const end = max - limit;
-    const idIndex = parseInt(Math.random() * (end - min + 1) + min, 10);
-    return baseSearch(`where id > ${idIndex} limit ${limit}`, conn);
+    const ids = new Set();
+    for (let index = 0; index < limit; index++) {
+      ids.add(parseInt(Math.random() * (max - min + 1) + min, 10));
+    }
+    const sql = `where id in (${Array.from(ids).join(',')})`;
+    return baseSearch(sql, conn);
   } catch (err) {
     throw err;
   } finally {
