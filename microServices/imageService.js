@@ -126,7 +126,7 @@ exports.search = (q) => {
     });
   }).then((images) => {
     // files filter by conditions
-    let msg;
+    let msg = 'success';
     let filteredImages = [];
     let testType = 0;
     if (q.conditionType === 'pixel' && (q.w || q.h)) testType = 1;

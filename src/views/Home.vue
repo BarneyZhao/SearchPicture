@@ -88,6 +88,7 @@ export default {
       this.outputData = storageData.map((d) => {
         return { src: this.$getImgPath(d.n), ...d };
       });
+      this.canPlayOrExport = true;
     }
   },
   methods: {

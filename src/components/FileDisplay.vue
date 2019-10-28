@@ -19,6 +19,7 @@
           <img v-lazy="file.src" class="tile-img" draggable="false">
           <ImageAction
             v-show="file.showActionBar"
+            :path="file.n"
             :height="30"
             :left="0"
             :bottom="0"

@@ -2,10 +2,10 @@ const { app } = require('electron');
 
 const config = {
   WINDOW_OPS: {
-    width: 1000,
-    height: 700,
-    minWidth: 1000,
-    minHeight: 700,
+    width: 1200,
+    height: 800,
+    minWidth: 1200,
+    minHeight: 800,
     title: 'Search Picture',
   },
   DEV_URL: 'http://localhost:8080',

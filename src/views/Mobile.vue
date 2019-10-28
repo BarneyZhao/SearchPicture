@@ -1,18 +1,18 @@
 <template>
   <div class="mobile">
     <div class="header">
-      <a href="javascript:null;" @click="picGrid(1)" :class="{'grid-selected': gridMode === 1}">
+      <div @click="picGrid(1)" :class="{'grid-selected': gridMode === 1}">
         <i class="el-icon-picture"></i>
-      </a>
-      <a href="javascript:null;" @click="picGrid(2)" :class="{'grid-selected': gridMode === 2}">
+      </div>
+      <div @click="picGrid(2)" :class="{'grid-selected': gridMode === 2}">
         <i class="el-icon-menu"></i>
-      </a>
-      <a href="javascript:null;" @click="picGrid(4)" :class="{'grid-selected': gridMode === 4}">
+      </div>
+      <div @click="picGrid(4)" :class="{'grid-selected': gridMode === 4}">
         <i class="el-icon-s-grid"></i>
-      </a>
-      <a href="javascript:null;" @click="loadPics">
+      </div>
+      <div @click="loadPics">
         <i class="el-icon-refresh"></i>
-      </a>
+      </div>
     </div>
     <div class="row container">
         <div :class="colClass" class="thumbnails" :style="colStyle" v-for="(item, index) in items" :key="index">
@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="refresh-link">
-      <a href="javascript:null;" @click="loadPics"><i class="el-icon-refresh"></i>刷新</a>
+      <div @click="loadPics"><i class="el-icon-refresh"></i>刷新</div>
     </div>
     <template v-if="items.length > 0">
       <PhotoSwipe
@@ -148,14 +148,14 @@ export default {
 .header {
   text-align: center;
 }
-.header a {
+.header div {
   display: inline-block;
   text-decoration: none;
   color: white;
   padding: 5px 10px;
   font-size: 15px;
 }
-.header a.grid-selected {
+.header div.grid-selected {
   color: #409EFF;
 }
 .container {
@@ -176,7 +176,7 @@ export default {
   text-align: center;
   padding: 10px 0;
 }
-.refresh-link a {
+.refresh-link div {
   display: inline-block;
   text-decoration: none;
   color: #409EFF;
