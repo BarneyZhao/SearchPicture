@@ -24,5 +24,10 @@ export default new Router({
       name: 'mobile',
       component: () => import(/* webpackChunkName: "mobile" */ './views/Mobile.vue')
     },
+    {
+      path: '/folder',
+      name: 'folder',
+      component: () => import(/* webpackChunkName: "folder" */ './views/Folder.vue')
+    },
   ]
 });

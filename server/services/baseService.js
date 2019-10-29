@@ -94,3 +94,17 @@ exports.likeOrDislike = async ({ id, flag }) => {
     if (conn) conn.end();
   }
 };
+
+exports.getFolder = async () => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query('select id, path, cover, like_num, dislike_num, key_word, create_time, update_time from folder;');
+    console.log(`query rows: ${rows.length}.`);
+    return { folders: rows };
+  } catch (err) {
+    throw err;
+  } finally {
+    if (conn) conn.end();
+  }
+};

@@ -53,4 +53,13 @@ router.post('/api/pic/likeOrDislike', (req, res) => {
   });
 });
 
+router.post('/api/folder', (req, res) => {
+  baseService.getFolder().then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    console.log(err);
+    res.json(err.message || err);
+  });
+});
+
 module.exports = router;
