@@ -11,7 +11,7 @@ import service from '../services/componentService';
 export default {
   name: 'ImageAction',
   props: {
-    path: String,
+    id: Number,
     height: {
       type: Number,
       default: 30,
@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     markPic (flag) {
-      service.likeOrDislike({ path: this.path, flag }).then(data => {
+      service.likeOrDislike({ id: this.id, flag }).then(data => {
         if (data && data.success) {
           this.$notify({
             message: flag === 1 ? 'Like it!' : 'Dislike it!',

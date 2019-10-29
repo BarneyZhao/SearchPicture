@@ -21,7 +21,7 @@ exports.search = services.search;
 
 const baseSearch = async (conditionSql, connection) => {
   let msg = 'success';
-  let sql = `select path as n, width as w, height as h, aspect_ratio, like_num, dislike_num, key_word, create_time, update_time from pic_info`;
+  let sql = `select id, path as n, width as w, height as h, aspect_ratio, like_num, dislike_num, key_word, create_time, update_time from pic_info`;
   sql += ' ' + conditionSql + ';';
   let conn;
   try {
@@ -62,14 +62,14 @@ exports.searchDbByRandom = async (limit = 2) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query('select min(id) as min,max(id) as max from pic_info;');
-    const [{ min, max }] = rows;
-    if (max - min + 1 < limit) {
-      return baseSearch('', conn);
+    const rows = await conn.query('select id from pic_info where dislike_num < 2;');
+    if (rows.length < limit) {
+      return baseSearch('where dislike_num < 2', conn);
     }
     const ids = new Set();
-    for (let index = 0; index < limit; index++) {
-      ids.add(parseInt(Math.random() * (max - min + 1) + min, 10));
+    while (ids.size < limit) {
+      const randomIndex = parseInt(Math.random() * rows.length, 10);
+      ids.add(rows[randomIndex].id);
     }
     const sql = `where id in (${Array.from(ids).join(',')})`;
     return baseSearch(sql, conn);
@@ -80,13 +80,13 @@ exports.searchDbByRandom = async (limit = 2) => {
   }
 };
 
-exports.likeOrDislike = async ({ path, flag }) => {
+exports.likeOrDislike = async ({ id, flag }) => {
   let word = flag === 1 ? 'like_num = like_num' : 'dislike_num = dislike_num';
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(`update pic_info set ${word} + 1 where path = '${path}';`);
-    console.log(path, rows, flag === 1 ? 'like+1' : 'dislike+1');
+    const rows = await conn.query(`update pic_info set ${word} + 1 where id = ${id};`);
+    console.log(id, rows, flag === 1 ? 'like+1' : 'dislike+1');
     return { success: true };
   } catch (err) {
     throw err;

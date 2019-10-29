@@ -124,8 +124,8 @@ export default {
         this.psVisible = val;
       });
     },
-    markPic (path, flag) {
-      service.likeOrDislike({ path, flag }).then(data => {
+    markPic (id, flag) {
+      service.likeOrDislike({ id, flag }).then(data => {
         if (data && data.success) {
           this.$notify({
             offset: 80,

@@ -39,4 +39,4 @@ const config = require('../config.json');
   } finally {
     if (pool) pool.end();
   }
-})(config.search_folder);
+})(config.pic_folder);

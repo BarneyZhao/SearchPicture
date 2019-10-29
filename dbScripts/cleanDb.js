@@ -3,6 +3,12 @@ const pool = require('../server/dbPool');
 const services = require('../microServices/imageService');
 const config = require('../config.json');
 
+/**
+ * 1.glob文件夹下文件
+ * 2.查询该路径的数据库记录
+ * 3.筛出文件不存在的数据库记录
+ * 4.删除该记录
+ */
 (async function asyncFunction (path) {
   console.log(`clean db in path: ${path}`);
   const errList = [];
@@ -33,4 +39,4 @@ const config = require('../config.json');
   } finally {
     if (pool) pool.end();
   }
-})(config.search_folder);
+})(config.pic_folder);

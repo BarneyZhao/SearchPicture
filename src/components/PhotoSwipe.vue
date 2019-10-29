@@ -95,7 +95,7 @@ export default {
   },
   methods: {
     markPic (flag) {
-      this.$emit('mark-pic', this.gallery.currItem.n, flag);
+      this.$emit('mark-pic', this.gallery.currItem.id, flag);
     },
   },
 };

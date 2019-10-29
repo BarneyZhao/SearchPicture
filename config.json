@@ -3,7 +3,8 @@
     "req": "ipc-{0}-req",
     "res": "ipc-{0}-res"
   },
-  "search_folder": "/Users/zhaoxuanzi/pics",
+  "pic_folder": "/Users/zhaoxuanzi/pics",
+  "pack_folder": "/Users/zhaoxuanzi/comic",
   "image_type": [
     "jpg",
     "jpeg",
