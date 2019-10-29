@@ -48,9 +48,9 @@ const insertPics = async (images, folderId, nowTime, errList) => {
     for (const folder of folderObjArray) {
       const sql = `
         insert into folder
-        (path, cover, like_num, dislike_num, create_time, update_time)
+        (path, cover, pages, like_num, dislike_num, create_time, update_time)
         value
-        ('${folder[0]}','${folder[1][0]}',0,0,'${nowTime}','${nowTime}')
+        ('${folder[0]}','${folder[1][0]}',${folder[1].length},0,0,'${nowTime}','${nowTime}')
       ;`;
       // eslint-disable-next-line no-await-in-loop
       const res = await pool.query(sql).catch((err) => {

@@ -2,6 +2,7 @@ create table folder (
     id int(20) not null auto_increment primary key,
     path varchar(100) not null,
     cover varchar(100),
+    pages int(5),
     like_num int(5),
     dislike_num int(5),
     key_word varchar(100),

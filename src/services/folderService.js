@@ -6,6 +6,12 @@ const service = {
       name: 'folder',
     });
   },
+  getFolderPics (params) {
+    return eu.req({
+      name: 'folder/pic',
+      params,
+    });
+  },
 };
 
 export default service;

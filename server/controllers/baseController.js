@@ -62,4 +62,13 @@ router.post('/api/folder', (req, res) => {
   });
 });
 
+router.post('/api/folder/pic', (req, res) => {
+  baseService.getFolderPics(req.body).then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    console.log(err);
+    res.json(err.message || err);
+  });
+});
+
 module.exports = router;

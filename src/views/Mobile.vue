@@ -1,6 +1,6 @@
 <template>
   <div class="mobile">
-    <div class="header">
+    <div class="header" v-if="!isComicMode">
       <div @click="picGrid(1)" :class="{'grid-selected': gridMode === 1}">
         <i class="el-icon-picture"></i>
       </div>
@@ -19,7 +19,7 @@
             <img v-lazy="item.src" @click="changeGallery(true, index)">
         </div>
     </div>
-    <div class="refresh-link">
+    <div class="refresh-link" v-if="!isComicMode">
       <div @click="loadPics"><i class="el-icon-refresh"></i>刷新</div>
     </div>
     <template v-if="items.length > 0">
@@ -40,7 +40,7 @@ import PhotoSwipe from '../components/PhotoSwipe';
 import * as softTime from '../utils/softTime';
 import storage from '../utils/storage';
 
-const storageData = storage.local.get('outputData') || [];
+let storageData = [];
 const getThumbBoundsFn = (index) => {
   const thumbnail = document.querySelectorAll('.thumbnails')[index];
   const pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
@@ -66,6 +66,7 @@ export default {
         arrowEl: false,
       },
       psVisible: false,
+      isComicMode: false,
     };
   },
   computed: {
@@ -80,11 +81,13 @@ export default {
     },
   },
   created () {
+    this.isComicMode = this.$route.query.mode === '1';
     let that = this;
     this.$Lazyload.$on('loaded', ({ el }) => {
       const time = that.gridMode === 4 ? 10 : 30;
       softTime.addTimeQueue(() => { el.style.opacity = 1; }, time);
     });
+    storageData = storage.local.get('outputData') || [];
     if (storageData.length === 0) {
       this.loadPics();
     } else {
@@ -119,12 +122,14 @@ export default {
       this.gridMode = mode;
     },
     changeGallery (val, index = -1) {
+      if (this.isComicMode) return;
       this.psOptions.index = index;
       this.$nextTick(() => {
         this.psVisible = val;
       });
     },
     markPic (id, flag) {
+      if (!id) return;
       service.likeOrDislike({ id, flag }).then(data => {
         if (data && data.success) {
           this.$notify({
@@ -159,7 +164,8 @@ export default {
   color: #409EFF;
 }
 .container {
-  min-height: 100vw;
+  min-height: 100vh;
+  align-content: flex-start;
 }
 .thumbnails {
   padding: 1px;
