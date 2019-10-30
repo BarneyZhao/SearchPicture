@@ -17,7 +17,7 @@ const getFiles = (folderPath) => {
     console.log('running glob...');
     glob(`${folderPath}/**/*.{jpg,jpeg,png,gif}`, { nodir: true }, (err, filesPath) => {
       if (!err) {
-        resolve(filesPath);
+        resolve(filesPath.filter(file => !file.includes('@eaDir')));
       } else {
         reject(err);
       }

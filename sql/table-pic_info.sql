@@ -1,6 +1,6 @@
 create table pic_info (
     id int(20) not null auto_increment primary key,
-    path varchar(100) not null,
+    path varchar(1024) not null,
     width varchar(10) not null,
     height varchar(10) not null,
     aspect_ratio float(3,2) not null,
