@@ -4,7 +4,7 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     // {
     //   path: '/',
@@ -29,5 +29,24 @@ export default new Router({
       name: 'folder',
       component: () => import(/* webpackChunkName: "folder" */ './views/Folder.vue')
     },
-  ]
+  ],
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { x: 0, y: 0 };
+    }
+  }
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.name === 'folder') {
+    document.body.style.backgroundColor = 'black';
+    document.body.style.color = 'white';
+  } else if (to.name === 'mobile') {
+    document.body.style.backgroundColor = 'black';
+  }
+  next();
+});
+
+export default router;

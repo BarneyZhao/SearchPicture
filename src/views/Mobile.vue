@@ -88,12 +88,15 @@ export default {
       softTime.addTimeQueue(() => { el.style.opacity = 1; }, time);
     });
     storageData = storage.local.get('outputData') || [];
-    if (storageData.length === 0) {
-      this.loadPics();
-    } else {
+    if (
+      storageData.length !== 0 &&
+      (storageData.every(s => s.w && s.h) || this.isComicMode)
+    ) {
       this.items = storageData.map((d) => {
         return { src: this.$getImgPath(d.n), title: d.n, ...d };
       });
+    } else {
+      this.loadPics();
     }
   },
   methods: {

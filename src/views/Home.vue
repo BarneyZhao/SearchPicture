@@ -84,7 +84,7 @@ export default {
     };
   },
   created () {
-    if (storageData.length !== 0) {
+    if (storageData.length !== 0 && storageData.every(s => s.w && s.h)) {
       this.outputData = storageData.map((d) => {
         return { src: this.$getImgPath(d.n), ...d };
       });
