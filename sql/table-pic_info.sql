@@ -6,7 +6,7 @@ create table pic_info (
     aspect_ratio float(3,2) not null,
     like_num int(5),
     dislike_num int(5),
-    key_word varchar(100),
+    keyword varchar(100),
     create_time varchar(15) not null,
     update_time varchar(15) not null
 );

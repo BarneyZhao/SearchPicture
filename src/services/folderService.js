@@ -12,6 +12,12 @@ const service = {
       params,
     });
   },
+  setFolderKeyword (params) {
+    return eu.req({
+      name: 'folder/keyword',
+      params,
+    });
+  },
 };
 
 export default service;

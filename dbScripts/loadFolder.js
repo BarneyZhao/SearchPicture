@@ -20,7 +20,7 @@ const insertPics = async (images, folderId, nowTime, errList) => {
       });
       return `insert err!`;
     });
-    console.log(res, `path: ${image}`);
+    console.log(res, `folderId: ${folderId}, path: ${image}`);
   }
 };
 
@@ -42,7 +42,9 @@ const insertPics = async (images, folderId, nowTime, errList) => {
       delete folderObj[row.path];
     });
     const folderObjArray = Object.entries(folderObj);
-    let [{ dbFolderId }] = await pool.query('select max(id) as dbFolderId from folder;');
+    let [{ dbFolderId }] = await pool.query('SELECT auto_increment as dbFolderId FROM information_schema.tables where table_schema="myNas" and table_name="folder";');
+    console.log(`当前folder自增id为 ${dbFolderId}`);
+    dbFolderId -= 1;
     const nowTime = Date.now();
     // eslint-disable-next-line no-restricted-syntax
     for (const folder of folderObjArray) {

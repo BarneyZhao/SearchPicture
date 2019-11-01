@@ -21,7 +21,7 @@ exports.search = services.search;
 
 const baseSearch = async (conditionSql, connection) => {
   let msg = 'success';
-  let sql = `select id, path as n, width as w, height as h, aspect_ratio, like_num, dislike_num, key_word, create_time, update_time from pic_info`;
+  let sql = `select id, path as n, width as w, height as h, aspect_ratio, like_num, dislike_num, keyword, create_time, update_time from pic_info`;
   sql += ' ' + conditionSql + ';';
   let conn;
   try {
@@ -99,7 +99,7 @@ exports.getFolder = async () => {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query('select id, path, cover, pages, like_num, dislike_num, key_word, create_time, update_time from folder;');
+    const rows = await conn.query('select id, path, cover, pages, like_num, dislike_num, keyword, create_time, update_time from folder;');
     console.log(`query rows: ${rows.length}.`);
     return { folders: rows };
   } catch (err) {
@@ -115,6 +115,20 @@ exports.getFolderPics = async ({ id }) => {
     conn = await pool.getConnection();
     const rows = await conn.query(`select id, path from folder_pic where folder_id = ${id};`);
     return { images: rows };
+  } catch (err) {
+    throw err;
+  } finally {
+    if (conn) conn.end();
+  }
+};
+
+exports.setFolderKeyword = async ({ id, keyword }) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query(`update folder set keyword = '${keyword}' where id = ${id};`);
+    console.log(id, rows, `update keyword: ${keyword}`);
+    return { success: true };
   } catch (err) {
     throw err;
   } finally {

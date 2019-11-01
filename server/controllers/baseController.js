@@ -9,7 +9,8 @@ router.get('/api/image', (req, res) => {
     } else {
       res.end(data);
     }
-  }).catch(() => {
+  }).catch((err) => {
+    console.log(err);
     res.status(404).end();
   });
 });
@@ -64,6 +65,15 @@ router.post('/api/folder', (req, res) => {
 
 router.post('/api/folder/pic', (req, res) => {
   baseService.getFolderPics(req.body).then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    console.log(err);
+    res.json(err.message || err);
+  });
+});
+
+router.post('/api/folder/keyword', (req, res) => {
+  baseService.setFolderKeyword(req.body).then((data) => {
     res.json(data);
   }).catch((err) => {
     console.log(err);
