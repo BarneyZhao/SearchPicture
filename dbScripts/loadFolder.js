@@ -48,11 +48,12 @@ const insertPics = async (images, folderId, nowTime, errList) => {
     const nowTime = Date.now();
     // eslint-disable-next-line no-restricted-syntax
     for (const folder of folderObjArray) {
+      const [folderPath, picPaths] = folder;
       const sql = `
         insert into folder
         (path, cover, pages, like_num, dislike_num, create_time, update_time)
         value
-        ('${folder[0]}','${folder[1][0]}',${folder[1].length},0,0,'${nowTime}','${nowTime}')
+        ('${folderPath}','${picPaths[0]}',${picPaths.length},0,0,'${nowTime}','${nowTime}')
       ;`;
       // eslint-disable-next-line no-await-in-loop
       const res = await pool.query(sql).catch((err) => {
