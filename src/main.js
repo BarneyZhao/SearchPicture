@@ -58,7 +58,21 @@ Vue.prototype.$getImgPath = (n) => {
   if (window.location.href.includes('file://')) {
     return n;
   } else {
-    return '/api/image?f=' + n;
+    const chars = [{
+      reg: /\#/g,
+      str: '<0>',
+    }, {
+      reg: /\%/g,
+      str: '<1>',
+    }, {
+      reg: /\&/g,
+      str: '<2>',
+    }, {
+      reg: /\+/g,
+      str: '<3>',
+    }];
+    const file = chars.reduce((f, c) => f.replace(c.reg, c.str), n);
+    return '/api/image?f=' + file;
   }
 };
 

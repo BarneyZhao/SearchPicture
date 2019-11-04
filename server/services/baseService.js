@@ -80,7 +80,7 @@ exports.searchDbByRandom = async (limit = 2) => {
   }
 };
 
-exports.likeOrDislike = async ({ id, flag }) => {
+exports.likeOrDislike = async (id, flag) => {
   let word = flag === 1 ? 'like_num = like_num' : 'dislike_num = dislike_num';
   let conn;
   try {
@@ -109,7 +109,7 @@ exports.getFolder = async () => {
   }
 };
 
-exports.getFolderPics = async ({ id }) => {
+exports.getFolderPics = async (id) => {
   let conn;
   try {
     conn = await pool.getConnection();
@@ -122,7 +122,7 @@ exports.getFolderPics = async ({ id }) => {
   }
 };
 
-exports.setFolderKeyword = async ({ id, keyword }) => {
+exports.setFolderKeyword = async (id, keyword) => {
   let conn;
   try {
     conn = await pool.getConnection();

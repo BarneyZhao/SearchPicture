@@ -3,7 +3,21 @@ const router = require('express').Router();
 const baseService = require('../services/baseService');
 
 router.get('/api/image', (req, res) => {
-  baseService.getImage(req.query.f).then((data) => {
+  const chars = [{
+    reg: /\<0\>/g,
+    str: '#',
+  }, {
+    reg: /\<1\>/g,
+    str: '%',
+  }, {
+    reg: /\<2\>/g,
+    str: '&',
+  }, {
+    reg: /\<3\>/g,
+    str: '+',
+  }];
+  const file = chars.reduce((f, c) => f.replace(c.reg, c.str), req.query.f);
+  baseService.getImage(file).then((data) => {
     if (!data) {
       res.status(404).end();
     } else {
@@ -11,7 +25,11 @@ router.get('/api/image', (req, res) => {
     }
   }).catch((err) => {
     console.log(err);
-    res.status(404).end();
+    res.status(404).json({
+      f: req.query.f,
+      file,
+      err,
+    });
   });
 });
 
@@ -46,7 +64,8 @@ router.post('/api/search/random', (req, res) => {
 });
 
 router.post('/api/pic/likeOrDislike', (req, res) => {
-  baseService.likeOrDislike(req.body).then((data) => {
+  const { id, flag } = req.body;
+  baseService.likeOrDislike(id, flag).then((data) => {
     res.json(data);
   }).catch((err) => {
     console.log(err);
@@ -64,7 +83,7 @@ router.post('/api/folder', (req, res) => {
 });
 
 router.post('/api/folder/pic', (req, res) => {
-  baseService.getFolderPics(req.body).then((data) => {
+  baseService.getFolderPics(req.body.id).then((data) => {
     res.json(data);
   }).catch((err) => {
     console.log(err);
@@ -73,7 +92,8 @@ router.post('/api/folder/pic', (req, res) => {
 });
 
 router.post('/api/folder/keyword', (req, res) => {
-  baseService.setFolderKeyword(req.body).then((data) => {
+  const { id, keyword } = req.body;
+  baseService.setFolderKeyword(id, keyword).then((data) => {
     res.json(data);
   }).catch((err) => {
     console.log(err);
