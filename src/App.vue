@@ -10,7 +10,10 @@
 export default {
   name: 'App',
   created () {
-    if (window.location.hash.includes('folder')) {
+    if (
+      window.location.hash.includes('folder') ||
+      window.location.hash.includes('mode=1')
+    ) {
       //
     } else if (this.$IS_TOUCH) {
       this.$router.push('/mobile');
@@ -20,6 +23,9 @@ export default {
   },
 };
 </script>
-<style>
 
+<style>
+.note-count-color p {
+  color: #909399;
+}
 </style>

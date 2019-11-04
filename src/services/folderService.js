@@ -18,6 +18,12 @@ const service = {
       params,
     });
   },
+  markFolder (params) {
+    return eu.req({
+      name: 'folder/mark',
+      params,
+    });
+  },
 };
 
 export default service;

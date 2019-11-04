@@ -22,6 +22,9 @@
     <div class="refresh-link" v-if="!isComicMode">
       <div @click="loadPics"><i class="el-icon-refresh"></i>刷新</div>
     </div>
+    <div v-if="isComicMode" class="comic-mode-placeholder"></div>
+    <!-- absolute doc -->
+    <div class="gesture-zone" ref="gesture" v-if="isComicMode"></div>
     <template v-if="items.length > 0">
       <PhotoSwipe
         :visible="psVisible"
@@ -35,6 +38,7 @@
 </template>
 
 <script>
+import AlloyFinger from 'alloyfinger';
 import service from '../services/mobileService';
 import PhotoSwipe from '../components/PhotoSwipe';
 import * as softTime from '../utils/softTime';
@@ -82,7 +86,7 @@ export default {
   },
   created () {
     this.isComicMode = this.$route.query.mode === '1';
-    let that = this;
+    const that = this;
     this.$Lazyload.$on('loaded', ({ el }) => {
       const time = that.gridMode === 4 ? 10 : 30;
       softTime.addTimeQueue(() => { el.style.opacity = 1; }, time);
@@ -97,6 +101,16 @@ export default {
       });
     } else {
       this.loadPics();
+    }
+  },
+  mounted () {
+    if (this.isComicMode) {
+      const that = this;
+      new AlloyFinger(this.$refs.gesture, {
+        swipe (evt) {
+          if (evt.direction === 'Right') that.$router.back();
+        }
+      });
     }
   },
   methods: {
@@ -125,33 +139,43 @@ export default {
       this.gridMode = mode;
     },
     changeGallery (val, index = -1) {
-      if (this.isComicMode) return;
+      if (this.isComicMode) {
+        this.$message({
+          message: `${index + 1}/${this.items.length}`,
+          duration: 1000,
+          center: true,
+          iconClass: 'no-icon',
+          customClass: 'note-count-color',
+        });
+        return;
+      }
       this.psOptions.index = index;
       this.$nextTick(() => {
         this.psVisible = val;
       });
     },
-    markPic (id, flag) {
-      if (!id) return;
-      service.likeOrDislike({ id, flag }).then(data => {
+    markPic (item, flag) {
+      if (!item.id) return;
+      const message = flag === 1 ? `Like` : `Dislike`;
+      service.likeOrDislike({ id: item.id, flag }).then(data => {
         if (data && data.success) {
-          this.$notify({
-            offset: 80,
-            message: flag === 1 ? 'Like it!' : 'Dislike it!',
-            duration: 1500,
+          this.$message({
+            message,
+            duration: 1000,
+            center: true,
+            iconClass: 'no-icon',
+            customClass: 'note-count-color',
+            offset: 40,
           });
         } else {
-          this.$notify({
-            offset: 80,
-            message: 'something wrong!',
-            duration: 1500,
-          });
+          this.$message.error('something wrong!');
         }
       });
     },
   },
 };
 </script>
+
 <style scoped>
 .header {
   text-align: center;
@@ -167,7 +191,6 @@ export default {
   color: #409EFF;
 }
 .container {
-  min-height: 100vh;
   align-content: flex-start;
 }
 .thumbnails {
@@ -190,5 +213,16 @@ export default {
   text-decoration: none;
   color: #409EFF;
   padding: 15px 20px;
+}
+.comic-mode-placeholder {
+  height: 40vh;
+}
+.gesture-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 20vw;
+  z-index: 2;
 }
 </style>

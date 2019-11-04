@@ -15,8 +15,8 @@
               <i class="icon el-icon-edit-outline" @click="editKeyword(index, folder.keyword)"></i>
             </div>
             <div class="folder-action">
-              <img src="../assets/thumb-down-line.svg">
-              <img src="../assets/thumb-up-line.svg">
+              <img src="../assets/thumb-down-line.svg" @click="markFoler(folder, 0)">
+              <img src="../assets/thumb-up-line.svg" @click="markFoler(folder, 1)">
             </div>
           </div>
       </div>
@@ -76,10 +76,31 @@ export default {
         }
       }
     },
+    async markFoler (item, flag) {
+      const res = await service.markFolder({ id: item.id, flag }).catch(err => {
+        console.log(err);
+        return { success: false };
+      });
+      if (res && res.success) {
+        const message = flag === 1 ? `Like` : `Dislike`;
+        this.$message({
+          message,
+          duration: 1000,
+          center: true,
+          iconClass: 'no-icon',
+          customClass: 'note-count-color',
+        });
+      } else {
+        this.$message.error('something wrong!');
+      }
+    },
   },
 };
 </script>
 <style scoped>
+.folder {
+  padding: 10px 0;
+}
 .folder .row {
     height: 40vw;
 }

@@ -135,3 +135,18 @@ exports.setFolderKeyword = async (id, keyword) => {
     if (conn) conn.end();
   }
 };
+
+exports.markFolder = async (id, flag) => {
+  let word = flag === 1 ? 'like_num = like_num' : 'dislike_num = dislike_num';
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query(`update folder set ${word} + 1 where id = ${id};`);
+    console.log(id, rows, flag === 1 ? 'like+1' : 'dislike+1');
+    return { success: true };
+  } catch (err) {
+    throw err;
+  } finally {
+    if (conn) conn.end();
+  }
+};

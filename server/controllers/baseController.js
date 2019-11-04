@@ -101,4 +101,14 @@ router.post('/api/folder/keyword', (req, res) => {
   });
 });
 
+router.post('/api/folder/mark', (req, res) => {
+  const { id, flag } = req.body;
+  baseService.markFolder(id, flag).then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    console.log(err);
+    res.json(err.message || err);
+  });
+});
+
 module.exports = router;
