@@ -1,10 +1,10 @@
-
+const inquirer = require('inquirer');
 const pool = require('../server/dbPool');
 const services = require('../microServices/imageService');
 const config = require('../config.json');
-const inquirer = require('inquirer');
+const path = config.pack_folder;
 
-(async function asyncFunction (path) {
+exports.cleanTableFolder = async () => {
   console.log(`load comic in path: ${path}`);
   const errList = [];
   try {
@@ -50,4 +50,4 @@ const inquirer = require('inquirer');
   } finally {
     if (pool) pool.end();
   }
-})(config.pack_folder);
+};

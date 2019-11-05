@@ -1,7 +1,7 @@
-
 const pool = require('../server/dbPool');
 const services = require('../microServices/imageService');
 const config = require('../config.json');
+const path = config.pack_folder;
 
 const insertPics = async (images, folderId, nowTime, errList) => {
   // eslint-disable-next-line no-restricted-syntax
@@ -24,8 +24,16 @@ const insertPics = async (images, folderId, nowTime, errList) => {
   }
 };
 
-(async function asyncFunction (path) {
-  console.log(`load comic in path: ${path}`);
+/**
+ * 1.glob path 下文件
+ * 2.归类成文件夹形式obj
+ * 3.查出表里已有数据
+ * 4.去除obj中已有记录的folder
+ * 5.查出Folder表自增id
+ * 6.插入folder数据和 folder_pic 数据
+ */
+exports.loadFoler = async () => {
+  console.log(`load folder in path: ${path}`);
   const errList = [];
   try {
     const files = await services.getFiles(path);
@@ -42,6 +50,10 @@ const insertPics = async (images, folderId, nowTime, errList) => {
       delete folderObj[row.path];
     });
     const folderObjArray = Object.entries(folderObj);
+    if (folderObjArray.length === 0) {
+      console.log('无新纪录');
+      return;
+    }
     let [{ dbFolderId }] = await pool.query('SELECT auto_increment as dbFolderId FROM information_schema.tables where table_schema="myNas" and table_name="folder";');
     console.log(`当前folder自增id为 ${dbFolderId}`);
     dbFolderId -= 1;
@@ -77,4 +89,4 @@ const insertPics = async (images, folderId, nowTime, errList) => {
   } finally {
     if (pool) pool.end();
   }
-})(config.pack_folder);
+};
