@@ -43,10 +43,10 @@ const baseSearch = async (conditionSql, connection) => {
 exports.searchDb = (q) => {
   const conditions = [];
   if (q.conditionType === 'pixel') {
-    if (q.w) conditions.push(`width = ${Number.parseInt(q.w, 0)}`);
-    if (q.h) conditions.push(`height = ${Number.parseInt(q.h, 0)}`);
-  } else if (q.rw && q.rh) {
-    const ratio = (Number.parseInt(q.rw, 0) / Number.parseInt(q.rh, 0)).toFixed(2);
+    if (q.width) conditions.push(`width = ${Number.parseInt(q.width, 0)}`);
+    if (q.height) conditions.push(`height = ${Number.parseInt(q.height, 0)}`);
+  } else if (q.width && q.height) {
+    const ratio = (Number.parseInt(q.width, 0) / Number.parseInt(q.height, 0)).toFixed(2);
     conditions.push(`(${ratio} - ${RATIO_BLUR}) <= aspect_ratio and aspect_ratio <= (${ratio} + ${RATIO_BLUR})`);
   }
   let cSql = '';

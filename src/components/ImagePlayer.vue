@@ -158,6 +158,7 @@ export default {
   height: 100vh;
   width: 100vw;
   background-color: black;
+  z-index: 3;
 }
 .imagePlayer img {
   vertical-align: middle;
@@ -170,7 +171,7 @@ export default {
 }
 .image {
   opacity: 0;
-  z-index: 1;
+  z-index: 4;
 }
 .image_show {
   opacity: 1;

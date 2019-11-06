@@ -129,25 +129,25 @@ exports.search = (q) => {
     let msg = 'success';
     let filteredImages = [];
     let testType = 0;
-    if (q.conditionType === 'pixel' && (q.w || q.h)) testType = 1;
-    if (q.conditionType === 'ratio' && q.rw && q.rh) testType = 2;
+    if (q.conditionType === 'pixel' && (q.width || q.height)) testType = 1;
+    if (q.conditionType === 'ratio' && q.width && q.height) testType = 2;
     if (testType !== 0) {
       images.forEach((image) => {
         let flag;
         if (testType === 1) {
-          let testW = Number.parseInt(q.w, 0) === image.w;
-          let testH = Number.parseInt(q.h, 0) === image.h;
+          let testW = Number.parseInt(q.width, 0) === image.w;
+          let testH = Number.parseInt(q.height, 0) === image.h;
           if (
-            (q.w && q.h && testW && testH) ||
-            (q.w && !q.h && testW) ||
-            (!q.w && q.h && testH)
+            (q.width && q.height && testW && testH) ||
+            (q.width && !q.height && testW) ||
+            (!q.width && q.height && testH)
           ) {
             flag = true;
           }
         } else if (testType === 2) {
           if (
             (image.w / image.h).toFixed(2) ===
-            (Number.parseInt(q.rw, 0) / Number.parseInt(q.rh, 0)).toFixed(2)
+            (Number.parseInt(q.width, 0) / Number.parseInt(q.height, 0)).toFixed(2)
           ) {
             flag = true;
           }

@@ -1,67 +1,68 @@
 <template>
   <div class="fileDisplay">
-    <div class="displaySetting">
-      <el-radio v-model="displayType" label="tile">平铺</el-radio>
-      <el-radio v-model="displayType" label="list">列表</el-radio>
-      <el-radio v-model="displayType" label="waterfall">瀑布流</el-radio>
-    </div>
-    <div class="line"></div>
-    <div v-show="displayType === 'tile'" class="window of-y_auto" :class="{'windows_scrollbar': isWindows}">
-      <div class="row justify-content-between">
-        <div class="mini_file col" :class="{'selected': selectedIndex === index}"
-          v-for="(file, index) in outputData" :key="file.n"
-          @click="fileClick(index)"
-          @dblclick="togglePreview"
-          @contextmenu="fileClick(index, file)"
-          @mouseenter="toggleImageActionBar(index, true)"
-          @mouseleave="toggleImageActionBar(index, false)"
-        >
-          <img v-lazy="file.src" class="tile-img" draggable="false">
-          <ImageAction
-            v-show="file.showActionBar"
-            :id="file.id"
-            :height="30"
-            :left="0"
-            :bottom="0"
-          ></ImageAction>
+    <el-tabs v-model="displayType" @tab-click="tabChange" type="card">
+      <el-tab-pane name="tile">
+        <span slot="label"><i class="el-icon-s-grid"></i>&nbsp;平铺</span>
+        <div class="row justify-content-between scroll-window">
+          <div class="mini_file col" :class="{'selected': selectedIndex === index}"
+            v-for="(file, index) in outputData" :key="file.n"
+            @click="selectedIndex = index;"
+            @dblclick="togglePreview"
+            @contextmenu="fileContextMenu(file)"
+            @mouseenter="toggleImageActionBar(index, true)"
+            @mouseleave="toggleImageActionBar(index, false)"
+          >
+            <img v-lazy="file.src" class="tile-img" draggable="false">
+            <ImageAction
+              v-show="file.showActionBar"
+              :id="file.id"
+              :height="30"
+              :left="0"
+              :bottom="0"
+            ></ImageAction>
+          </div>
+          <div class="mini_file_placeholder col" v-for="i in placeholderCount" :key="'mfp'+i"></div>
         </div>
-        <div class="mini_file_placeholder col" v-for="i in placeholderCount" :key="'mfp'+i"></div>
-      </div>
-    </div>
-    <div v-show="displayType === 'list'" class="row">
-      <div class="window files col" :class="{'windows_scrollbar': isWindows}" ref="scrollBody">
-        <div class="file" :class="{'selected': selectedIndex === index}"
-          v-for="(file, index) in outputData" :key="index"
-          @click="fileClick(index)"
-          @dblclick="togglePreview"
-          @contextmenu="fileClick(index, file)"
-        >
-          {{getFilePath(file.n)}}
+      </el-tab-pane>
+      <el-tab-pane name="list">
+        <span slot="label"><i class="el-icon-tickets"></i>&nbsp;列表</span>
+        <div class="row">
+          <div class="list-files col scroll-window">
+            <div class="file" :class="{'selected': selectedIndex === index}"
+              v-for="(file, index) in outputData" :key="index"
+              @click="selectedIndex = index;"
+              @dblclick="togglePreview"
+              @contextmenu="fileContextMenu(file)"
+            >{{file.n}}</div>
+          </div>
+          <div class="list-preview col">
+            <ImagePreview v-if="outputData && selectedIndex !== -1" :imgObj="outputData[selectedIndex]"></ImagePreview>
+          </div>
         </div>
-      </div>
-      <div class="window image col">
-        <ImagePreview v-if="outputData && selectedIndex !== -1" :imgObj="outputData[selectedIndex]"></ImagePreview>
-      </div>
-    </div>
-    <div v-show="displayType === 'waterfall'" class="window of-y_auto">
-      <Waterfall
-        ref="waterfallCom"
-        :line-gap="200"
-        :min-line-gap="200"
-        :max-line-gap="300"
-      >
-        <WaterfallSlot
-          class="waterfall-box"
-          move-class="waterfall_move-class"
-          v-for="(file, index) in outputData" :key="file.n"
-          :order="index"
-          :width="file.w"
-          :height="file.h"
-        >
-          <img v-lazy="file.src" @click="togglePreview(index)" class="waterfall-img" draggable="false">
-        </WaterfallSlot>
-      </Waterfall>
-    </div>
+      </el-tab-pane>
+      <el-tab-pane name="waterfall">
+        <span slot="label"><i class="el-icon-picture-outline"></i>&nbsp;瀑布流</span>
+        <div class="scroll-window">
+          <Waterfall
+            ref="waterfallCom"
+            :line-gap="200"
+            :min-line-gap="200"
+            :max-line-gap="300"
+          >
+            <WaterfallSlot
+              class="waterfall-box"
+              move-class="waterfall_move-class"
+              v-for="(file, index) in outputData" :key="file.n"
+              :order="index"
+              :width="file.w"
+              :height="file.h"
+            >
+              <img v-lazy="file.src" @click="togglePreview(index)" class="waterfall-img" draggable="false">
+            </WaterfallSlot>
+          </Waterfall>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
     <!-- 原来的preview -->
     <!-- <div class="image_preview" v-show="isShowPreview" v-if="previewImage">
       <ImagePreview :imgObj="previewImage" @imgClick="togglePreview"></ImagePreview>
@@ -76,7 +77,6 @@
 </template>
 
 <script>
-// import _ from 'lodash';
 import { Waterfall, WaterfallSlot } from 'vue-waterfall';
 import ImagePreview from '@/components/ImagePreview';
 import ImageAction from '@/components/ImageAction';
@@ -91,11 +91,11 @@ export default {
     ImagePreview,
     ImageAction,
   },
-  props: ['searchFolder', 'outputData', 'selectedIndex'],
+  props: ['outputData'],
   data () {
     return {
       displayType: storage.local.get('displayType') || 'waterfall',
-      scrollVal: 0,
+      selectedIndex: -1,
       placeholderCount: 20,
       isShowPreview: false,
       previewImage: null,
@@ -120,40 +120,17 @@ export default {
           if (vm.isShowPreview) vm.togglePreview();
           break;
       }
-      // let dir;
-      // if (e.keyCode === 37 || e.keyCode === 38) dir = '-';
-      // if (e.keyCode === 39 || e.keyCode === 40) dir = '+';
-      // if (dir) {
-      //   if (dir === '-' && vm.selectedIndex > 0) {
-      //     vm.selectedIndex -= 1;
-      //   }
-      //   if (dir === '+' && vm.selectedIndex < vm.outputData.length - 1) {
-      //     vm.selectedIndex += 1;
-      //   }
-      // }
-      // vm.$nextTick(() => {
-      //   let pos = document.getElementsByClassName('selected')[0].getBoundingClientRect();
-      //   let viewWindow = window.innerHeight - 15;
-      //   if (dir === '+' && pos.bottom > viewWindow) {
-      //     vm.scrollVal += pos.bottom - viewWindow;
-      //     vm.$refs.scrollBody.scrollTop = vm.scrollVal;
-      //   }
-      // });
     });
-    // this.$refs.scrollBody.addEventListener('scroll', _.debounce(() => {
-    //   vm.scrollVal = document.getElementsByClassName('files')[0].scrollTop;
-    // }, 300));
   },
   methods: {
-    fileClick (index, item) {
-      this.$emit('fileClick', index);
-      if (item) this.$emit('contextMenuClick', item);
+    tabChange (tab) {
+      storage.local.set('displayType', this.displayType);
+      if (this.displayType === 'waterfall') {
+        this.$refs.waterfallCom.reflowHandler();
+      }
     },
-    getFilePath (name) {
-      return name.replace(this.searchFolder.replace(/\\/g, '/'), '');
-    },
-    getFileName (name) {
-      return name.slice(name.lastIndexOf('/') + 1);
+    fileContextMenu (item) {
+      this.$emit('contextMenuClick', item);
     },
     togglePreview (index) {
       // 原来的preview
@@ -163,13 +140,11 @@ export default {
       // } else {
       //   this.previewImage = null;
       // }
-      let sIndex = this.selectedIndex;
       if (index > -1) { // 兼容瀑布流模式下单击事件触发此方法
-        sIndex = index;
-        this.fileClick(index);
+        this.selectedIndex = index;
       }
       if (!this.$refs.elpreviewer.showViewer) {
-        this.previewImage = this.outputData[sIndex];
+        this.previewImage = this.outputData[this.selectedIndex];
         this.$nextTick(() => {
           this.$refs.elpreviewer.clickHandler();
         });
@@ -182,73 +157,45 @@ export default {
       this.$emit('toggleActBar', index, flag);
     },
   },
-  computed: {
-    isWindows () {
-      return this.$PLATFORM === 'win32';
-    },
-  },
   watch: {
-    displayType () {
-      storage.local.set('displayType', this.displayType);
-      if (this.displayType === 'waterfall') {
-        this.$refs.waterfallCom.reflowHandler();
-      }
+    outputData () {
+      this.selectedIndex = -1;
     },
   },
 };
 </script>
 
+<style>
+.el-tabs__header {
+  margin-bottom: 4px;
+}
+</style>
 <style scoped>
-.displaySetting {
-  background-color: #fff;
-  padding: 5px 0;
-  z-index: 2;
+.scroll-window {
+  overflow-y: auto;
+  height: calc(100vh - 45px);
+  padding-bottom: 10px;
 }
-.window {
-  height: calc(100vh - 185px);
-}
-.windows_scrollbar::-webkit-scrollbar {
+.scroll-window::-webkit-scrollbar {
   width: 4px;
   background-color: transparent;
 }
-.windows_scrollbar::-webkit-scrollbar-button {
+.scroll-window::-webkit-scrollbar-button {
   display: none;
 }
-.windows_scrollbar::-webkit-scrollbar-track {
+.scroll-window::-webkit-scrollbar-track {
   display: none;
 }
-.windows_scrollbar::-webkit-scrollbar-thumb {
+.scroll-window::-webkit-scrollbar-thumb {
   border-radius: 10px;
   box-shadow: inset 0 0 6px rgba(0,0,0,.3);
   background-color:rgba(0,0,0,.2);
 }
-.files {
-  overflow-y: auto;
-  -webkit-flex: 0 0 400px;
-  -ms-flex: 0 0 400px;
-  flex: 0 0 400px;
-  width: 400px;
-  max-width: 400px;
-  margin-left: -15px;
-}
-.file {
-  padding: 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border-radius: 2px;
-}
-.file:hover:not(.selected) {
-  background-color: #f0fcff;
-}
-.image {
-  padding-left: 10px;
-  border-left: 1px solid #f0f0f0;
+
+.selected {
+  background-color: #e3f9fd;
 }
 
-.of-y_auto {
-  overflow-y: auto;
-}
 .mini_file {
   margin-top: 15px;
   padding: 3px;
@@ -270,9 +217,6 @@ export default {
 .mini_file:hover:not(.selected) {
   background-color: #f0fcff;
 }
-.selected {
-  background-color: #e3f9fd;
-}
 .mini_file_placeholder {
   height: 1px;
   -webkit-flex: 0 0 150px;
@@ -281,6 +225,29 @@ export default {
   width: 150px;
   max-width: 150px;
 }
+
+.list-files {
+  -webkit-flex: 0 0 400px;
+  -ms-flex: 0 0 400px;
+  flex: 0 0 400px;
+  width: 400px;
+  max-width: 400px;
+}
+.list-files .file {
+  padding: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 2px;
+}
+.list-files .file:hover:not(.selected) {
+  background-color: #f0fcff;
+}
+.list-preview {
+  padding-left: 10px;
+  border-left: 1px solid #f0f0f0;
+}
+
 .waterfall_move-class {
   transition: transform .5s cubic-bezier(.55,0,.1,1);
 }

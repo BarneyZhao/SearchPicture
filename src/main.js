@@ -8,9 +8,14 @@ import {
   FormItem,
   Icon,
   Radio,
+  RadioGroup,
+  RadioButton,
   InputNumber,
   Dialog,
   Image,
+  Drawer,
+  Tabs,
+  TabPane,
   Message,
   MessageBox,
   Notification,
@@ -45,9 +50,14 @@ Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Icon);
 Vue.use(Radio);
+Vue.use(RadioGroup);
+Vue.use(RadioButton);
 Vue.use(InputNumber);
 Vue.use(Dialog);
 Vue.use(Image);
+Vue.use(Drawer);
+Vue.use(Tabs);
+Vue.use(TabPane);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;

@@ -8,7 +8,7 @@ const config = {
     minHeight: 800,
     title: 'Search Picture',
   },
-  DEV_URL: 'http://localhost:8080',
+  DEV_URL: 'http://localhost:8081',
   PROD_URL: 'file://{0}/dist/index.html',
   APP_MENUS: [
     {
