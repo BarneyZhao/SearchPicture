@@ -14,7 +14,8 @@
           >
             <img v-lazy="file.src" class="tile-img" draggable="false">
             <ImageAction
-              v-show="file.showActionBar"
+              v-if="!$IS_E"
+              v-show="mouseOverIndex === index"
               :id="file.id"
               :height="30"
               :left="0"
@@ -96,6 +97,7 @@ export default {
     return {
       displayType: storage.local.get('displayType') || 'waterfall',
       selectedIndex: -1,
+      mouseOverIndex: -1,
       placeholderCount: 20,
       isShowPreview: false,
       previewImage: null,
@@ -154,12 +156,14 @@ export default {
       }
     },
     toggleImageActionBar (index, flag) {
-      this.$emit('toggleActBar', index, flag);
+      if (flag) this.mouseOverIndex = index;
+      else this.mouseOverIndex = -1;
     },
   },
   watch: {
     outputData () {
       this.selectedIndex = -1;
+      this.mouseOverIndex = -1;
     },
   },
 };

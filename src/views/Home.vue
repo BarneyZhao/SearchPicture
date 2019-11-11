@@ -16,7 +16,6 @@
       <FileDisplay
         :outputData="outputData"
         @contextMenuClick="contextMenuClick"
-        @toggleActBar="toggleActBar"
       ></FileDisplay>
     </div>
     <el-drawer
@@ -92,7 +91,7 @@ const handleRespose = (that) => {
     if (data && Array.isArray(data.images)) {
       storage.local.set('outputData', data.images);
       that.outputData = data.images.map((d) => {
-        return { src: that.$getImgPath(d.n), showActionBar: false, ...d };
+        return { src: that.$getImgPath(d.n), ...d };
       });
       if (that.outputData.length === 0) msg = data.msg + '查询结果为空';
     } else {
@@ -257,11 +256,6 @@ export default {
     contextMenuClick (item) {
       if (!this.$IS_E) return;
       service.showContextMenu(item);
-    },
-    toggleActBar (index, flag) {
-      const newObj = this.outputData[index];
-      newObj.showActionBar = flag;
-      this.outputData.splice(index, 1, newObj);
     },
   },
 };

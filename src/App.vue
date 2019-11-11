@@ -39,6 +39,12 @@ export default {
 </script>
 
 <style>
+#app {
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
 .note-count-color p {
   color: #909399;
 }
