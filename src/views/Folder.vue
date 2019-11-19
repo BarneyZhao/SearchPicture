@@ -101,13 +101,10 @@ export default {
 .folder {
   padding: 10px 0;
 }
-.folder .row {
-    height: 40vw;
-}
 .cover {
   vertical-align: middle;
   width: 100%;
-  height: 100%;
+  height: 40vw;
   object-fit: scale-down;
 }
 .desc-block {
