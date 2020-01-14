@@ -41,10 +41,10 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.name === 'folder') {
-    document.body.style.backgroundColor = 'black';
+    document.body.style.backgroundColor = '#000000cc';
     document.body.style.color = 'white';
   } else if (to.name === 'mobile') {
-    document.body.style.backgroundColor = 'black';
+    document.body.style.backgroundColor = '#000000cc';
   }
   next();
 });

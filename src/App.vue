@@ -71,26 +71,28 @@ export default {
 }
 @keyframes fold-left-out {
   0% {
-    transform: translate3d(0, 0, 0);
+    z-index: -1;
   }
   100% {
-    transform: translate3d(-100%, 0, 0);
+    z-index: -1;
   }
 }
 @keyframes fold-right-in {
   0% {
-    transform: translate3d(-100%, 0, 0);
+    z-index: -1;
   }
   100% {
-    transform: translate3d(0, 0, 0);
+    z-index: -1;
   }
 }
 @keyframes fold-right-out {
   0% {
     transform: translate3d(0, 0, 0);
+    z-index: 1;
   }
   100% {
     transform: translate3d(100%, 0, 0);
+    z-index: 1;
   }
 }
 </style>

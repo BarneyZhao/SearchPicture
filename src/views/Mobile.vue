@@ -14,7 +14,10 @@
         <i class="el-icon-refresh"></i>
       </div>
     </div>
-    <div class="row container">
+    <div class="row container" v-if="isComicMode && skeletonVisible">
+      <div class="col-12 bone-box"></div>
+    </div>
+    <div class="row container" v-else>
         <div :class="colClass" class="thumbnails" :style="colStyle" v-for="(item, index) in items" :key="index">
             <img v-lazy="item.src" @click="changeGallery(true, index)">
         </div>
@@ -22,7 +25,6 @@
     <div class="refresh-link" v-if="!isComicMode">
       <div @click="loadPics"><i class="el-icon-refresh"></i>刷新</div>
     </div>
-    <div v-if="isComicMode" class="comic-mode-placeholder"></div>
     <!-- absolute doc -->
     <div class="gesture-zone" ref="gesture" v-if="isComicMode"></div>
     <template v-if="items.length > 0">
@@ -71,6 +73,7 @@ export default {
       },
       psVisible: false,
       isComicMode: false,
+      skeletonVisible: true,
     };
   },
   computed: {
@@ -84,8 +87,16 @@ export default {
       return `height: ${percent}vw;`;
     },
   },
-  created () {
+  async created () {
     this.isComicMode = this.$route.query.mode === '1';
+    if (this.isComicMode) {
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          this.skeletonVisible = false;
+          resolve();
+        }, 350);
+      });
+    }
     const that = this;
     this.$Lazyload.$on('loaded', ({ el }) => {
       const time = that.gridMode === 4 ? 10 : 30;
@@ -177,6 +188,9 @@ export default {
 </script>
 
 <style scoped>
+.mobile {
+  background-color: black;
+}
 .header {
   text-align: center;
 }
@@ -192,6 +206,10 @@ export default {
 }
 .container {
   align-content: flex-start;
+}
+.bone-box {
+  height: 100vh;
+  width: 100vw;
 }
 .thumbnails {
   padding: 1px;
@@ -213,9 +231,6 @@ export default {
   text-decoration: none;
   color: #409EFF;
   padding: 15px 20px;
-}
-.comic-mode-placeholder {
-  height: 40vh;
 }
 .gesture-zone {
   position: fixed;
